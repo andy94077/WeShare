@@ -18,23 +18,24 @@ class SQLHelper:
         cursor = self.db.cursor()
         cursor.execute(f'SELECT * FROM EventCodeMapping')
         result = cursor.fetchall()
-        print(result)
+        result = [r[1] for r in result]
+        return result
 
     def CheckIfEventCodeExists(self, code):
         assert re.match('[0-9a-zA-Z]{4}', code)
 
         cursor = self.db.cursor()
-        cursor.execute(f'SELECT * FROM EventCodeMapping WHERE eventCode=\'{code}\'')
+        cursor.execute(f'SELECT * FROM EventCodeMapping WHERE eventCode="{code}"')
         result = cursor.fetchall()
         return len(result) == 1
 
-    def LoginWithToken(self, token):
+    def LoginEventWithToken(self, token):
         assert re.match('[0-9a-zA-Z]{8}', token)
 
         cursor = self.db.cursor()
-        cursor.execute(f'SELECT * FROM EventCodeMapping WHERE eventToken=\'{token}\'')
+        cursor.execute(f'SELECT * FROM EventCodeMapping WHERE eventToken="{token}"')
         result = cursor.fetchall()
-        print(result)
+        return None if len(result) == 0 else result[0]
 
     def CreateEvent(self, title = 'An Excellent Event'):
         assert len(title.encode('utf-8')) <= 255
@@ -47,10 +48,14 @@ class SQLHelper:
 
         # Write to `EventCodeMapping`
         cursor = self.db.cursor()
-        cursor.execute(f'INSERT INTO EventCodeMapping (`eventCode`, `eventToken`, `eventName`) VALUES (\'{code}\', \'{token}\', \'{title}\')')
+        cursor.execute(f'''
+            INSERT INTO EventCodeMapping
+                (`eventCode`, `eventToken`, `eventName`)
+                VALUES ("{code}", "{token}", "{title}")
+        ''')
         self.db.commit()
 
-        # TODO: Create event table
+        # Create event table
         cursor = self.db.cursor()
         cursor.execute(f'''
             CREATE TABLE `Event_{code}` (
@@ -65,6 +70,8 @@ class SQLHelper:
         return code, token
 
     def RemoveEvent(self, code):
+        raise NotImplementedError
+        # TODO: in the future
         assert re.match('[0-9a-zA-Z]{4}', code)
 
         # Remove event table
@@ -73,7 +80,7 @@ class SQLHelper:
 
         # Remove `EventCodeMapping` instance
 
-    def GetAllPostsByCode(self, code, startID = 1):
+    def GetPosts(self, code, startID = 1):
         assert re.match('[0-9a-zA-Z]{4}', code)
 
         assert self.CheckIfEventCodeExists(code)
@@ -83,19 +90,20 @@ class SQLHelper:
         result = cursor.fetchall()
         return result
 
+    def InsertPost(self, code, type, content):
+        assert self.CheckIfEventCodeExists(code)
+
+        assert type in ['text', 'link', 'image', 'file']
+        
+        cursor = self.db.cursor()
+        cursor.execute(f'''
+            INSERT INTO Event_{code}
+                (type, content)
+                VALUES ("{type}", "{content}")
+        ''');
+        self.db.commit()
+
 #  inputToken = input().strip()
 #  LoginWithToken(inputToken)
-sqlhelper = SQLHelper()
-
-# test
-def test1():
-    print(sqlhelper.CheckIfEventCodeExists('1234'))
-    print(sqlhelper.CheckIfEventCodeExists('3456'))
-    print(sqlhelper.CheckIfEventCodeExists('5678'))
-    sqlhelper.GetAllEventCodes()
-
-def testCreate():
-    print(sqlhelper.CreateEvent('PingChia'))
-    sqlhelper.GetAllEventCodes()
-
-testCreate()
+if __name__ == '__main__':
+    sqlhelper = SQLHelper()
