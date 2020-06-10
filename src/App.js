@@ -6,6 +6,7 @@ import Welcome from './Welcome';
 import EventCode from './EventCode';
 import SignUp from './SignUp';
 import SignIn from './SignIn';
+import Tutorial from './Tutorial';
 import Contribution from './Contribution';
 import Upload from './Upload';
 import Download from './Download';
@@ -64,7 +65,7 @@ class App extends React.Component {
                             handleEventCode={this.handleEventCode}
                             handleEventToken={this.handleEventToken} />
 		else if (tabIndex === "Tutorial")
-			currentPage = <p>Fuck yourself!</p>
+            currentPage = <Tutorial />
 		else if (tabIndex === "About Us")
 			currentPage = <Contribution />
 		else if (tabIndex === "Teacher")
