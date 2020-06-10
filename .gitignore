@@ -2,3 +2,6 @@ node_modules
 
 .vscode/
 venv/
+
+# SQL secret
+secret.py

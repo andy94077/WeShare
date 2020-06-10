@@ -29,15 +29,30 @@ class SQLHelper:
         result = cursor.fetchall()
         return len(result) == 1
 
-    def LoginEventWithToken(self, token):
+    def GetEventTitle(self, code):
+        assert re.match('[0-9a-zA-Z]{4}', code)
+
+        cursor = self.db.cursor()
+        cursor.execute(f'SELECT * FROM EventCodeMapping WHERE eventCode="{code}"')
+        result = cursor.fetchall()
+        if len(result) == 0:
+            return None
+        else:
+            return result[0][2]
+
+    def LoginAsAdmin(self, token):
         assert re.match('[0-9a-zA-Z]{8}', token)
 
         cursor = self.db.cursor()
         cursor.execute(f'SELECT * FROM EventCodeMapping WHERE eventToken="{token}"')
         result = cursor.fetchall()
-        return None if len(result) == 0 else result[0]
+        if len(result) == 0:
+            return None
+        else:
+            return result[0][1], result[0][3]
 
     def CreateEvent(self, title = 'An Excellent Event'):
+        # Returns a tuple of (code, token)
         assert len(title.encode('utf-8')) <= 255
 
         token = generateRandomString(length = 8)
@@ -88,7 +103,7 @@ class SQLHelper:
         cursor = self.db.cursor()
         cursor.execute(f'SELECT * FROM Event_{code} WHERE id >= {startID}')
         result = cursor.fetchall()
-        return result
+        return [r[1:] for r in result]
 
     def InsertPost(self, code, type, content):
         assert self.CheckIfEventCodeExists(code)
