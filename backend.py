@@ -41,7 +41,7 @@ def create():
 @app.route('/weshare/admin', methods=['POST'])
 def admin():
     token = request.form['eventToken']
-    result = sqlhelper.LoginEventWithToken(token)
+    result = sqlhelper.LoginAsAdmin(token)
     if result is None:
         return jsonify({
             'valid' : 'False'
