@@ -9,13 +9,13 @@
 	},
 	"manifest_version": 2,
 	"permissions": [
-	"activeTab"
+	"webRequest",
+	"*://140.112.29.204/*"
 	],
 	"browser_action": {
 		"default_popup": "popup.html",
 		"default_title": "WeShare",
 		"default_icon": "icon/icon16.png"
 	},
-	"background": {"scripts":["background.js"]},
 	"version": "1.0.0"
 }
