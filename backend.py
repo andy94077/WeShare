@@ -1,4 +1,7 @@
-import os
+import os, json
+
+from hashlib import sha256
+from datetime import datetime
 from flask import Flask, request, jsonify, session
 from flask_cors import CORS
 
@@ -78,19 +81,20 @@ def insert():
 
     code = session['event_code']
     postType = request.form['postType']
+    timestamp = datetime.now().strftime('%Y%m%d-%H%M%S')
     if postType in ['text', 'link', 'image', 'file']:
         if postType in ['text', 'link']:
             content = request.form['postContent']
-        elif postType == 'file':
+        else:
             file = request.files['postFile']
             filename = file.filename.strip().split('/')[-1]
-            content = os.path.join(app.config['UPLOAD_FOLDER'], code, 'files', filename)
-            file.save(content)
-        else:
-            image = request.files['postImage']
-            imagename = file.filename.strip().split('/')[-1]
-            content = os.path.join(app.config['UPLOAD_FOLDER'], code, 'images', imagename)
-            image.save(content)
+            hashValue = sha256(filename.encode()).hexdigest()
+            filepath = os.path.join(app.config['UPLOAD_FOLDER'], code, postType, f'{hashValue}-{timestamp}')
+            content = json.dumps({
+                'filename': filename,
+                'filepath': filepath
+            })
+            file.save(filepath)
 
         sqlhelper.InsertPost(code, postType, content)
         return jsonify({
@@ -103,8 +107,28 @@ def insert():
 
 @app.route('/weshare/show', methods=['POST'])
 def show():
+    def parse(p):
+        t = p[1]
+        if t in ['text', 'link']:
+            return {
+                'timestamp': p[0],
+                'type': t,
+                'content': p[2]
+            }
+        else:
+            content = json.loads(p[2])
+            filename = content['filename']
+            filepath = content['filepath']
+            return {
+                'timestamp': p[0],
+                'type': t,
+                'filename': filename,
+                'filepath': filepath
+            }
+
     code = session['event_code']
-    posts = sqlhelper.GetPosts(code)
+    posts = list(map(parse, sqlhelper.GetPosts(code)))
+
     return jsonify({
         'posts' : posts
     })
@@ -112,4 +136,4 @@ def show():
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['MAX_CONTENT_LENGTH'] = 64 * 1024 * 1024
 app.secret_key = 'cnlab2020'
-app.run('140.112.29.204', port=12345)
+app.run('140.112.29.204', port=48763)
