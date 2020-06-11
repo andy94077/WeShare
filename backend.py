@@ -104,12 +104,13 @@ def insert():
         else:
             file = request.files['postFile']
             filename = file.filename.strip().split('/')[-1]
+            print(filename)
             hashValue = sha256(filename.encode()).hexdigest()
             filepath = os.path.join(app.config['UPLOAD_FOLDER'], code, postType, f'{hashValue}-{timestamp}-{filename}')
             content = json.dumps({
                 'filename': filename,
                 'filepath': filepath
-            }).replace('"', '\'')
+            }, ensure_ascii=False).replace('"', '\'')
             file.save(filepath)
 
         print(code, postType, content)
@@ -134,7 +135,7 @@ def show():
                 'content': p[2]
             }
         else:
-            content = json.loads(p[2].replace('\'', '"'))
+            content = json.loads(p[2].replace('\'', '"').encode('utf-8'))
             filename = content['filename']
             filepath = content['filepath']
             return {
@@ -156,8 +157,10 @@ def show():
 @app.route('/weshare/destroy', methods=['POST'])
 def destroy():
     password = request.form['nuclearBombPassword']  # "cnlab2020"
+    print(password)
     if password == "cnlab2020":
         codes = sqlhelper.GetAllEventCodes()
+        print(codes)
         for code in codes:
             sqlhelper.RemoveEvent(code)
 
@@ -172,4 +175,4 @@ def download(filepath):
     filename = filepath.split('/')[-1][81:]
     return send_from_directory(directory = uploads, filename = filepath, as_attachment = True, attachment_filename = filename)
 
-app.run('140.112.30.32', port=48764, debug=True)
+app.run('140.112.30.32', port=48766, debug=True)
