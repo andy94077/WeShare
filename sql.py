@@ -38,7 +38,8 @@ class SQLHelper:
         if len(result) == 0:
             return None
         else:
-            return result[0][2]
+            # returns event title
+            return result[0][3]
 
     def LoginAsAdmin(self, token):
         assert re.match('[0-9a-zA-Z]{8}', token)
@@ -49,6 +50,7 @@ class SQLHelper:
         if len(result) == 0:
             return None
         else:
+            # returns event code, event title
             return result[0][1], result[0][3]
 
     def CreateEvent(self, title = 'An Excellent Event'):
@@ -85,15 +87,23 @@ class SQLHelper:
         return code, token
 
     def RemoveEvent(self, code):
-        raise NotImplementedError
-        # TODO: in the future
         assert re.match('[0-9a-zA-Z]{4}', code)
 
-        # Remove event table
         cursor = self.db.cursor()
-        cursor.execute()
+
+        try:
+            # Remove event table
+            cursor.execute(f'DROP TABLE Event_{code}')
+        except:
+            pass
 
         # Remove `EventCodeMapping` instance
+        try:
+            cursor.execute(f'DELETE FROM EventCodeMapping WHERE eventCode = "{code}"')
+        except:
+            pass
+
+        self.db.commit()
 
     def GetPosts(self, code, startID = 1):
         assert re.match('[0-9a-zA-Z]{4}', code)

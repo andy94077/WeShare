@@ -2,17 +2,25 @@ import os, json
 
 from hashlib import sha256
 from datetime import datetime
-from flask import Flask, request, jsonify, session
+
+from flask import Flask, request, jsonify, session, send_from_directory
 from flask_cors import CORS
 
 from sql import SQLHelper
 
-UPLOAD_FOLDER = './uploads'
-
 app = Flask(__name__)
 CORS(app)
 
+app.config['UPLOAD_FOLDER'] = 'uploads'
+app.config['MAX_CONTENT_LENGTH'] = 64 * 1024 * 1024
+app.config['SECRET_KEY'] = 'a' * 24
+
 sqlhelper = SQLHelper()
+
+# Set permanent session
+@app.before_request
+def make_session_permanent():
+    print(session)
 
 # Only for demo, probabily useless
 @app.route('/weshare/eventCode', methods=['POST'])
@@ -26,11 +34,14 @@ def create():
     title = request.form['eventTitle']
     code, token = sqlhelper.CreateEvent(title)
     os.makedirs(os.path.join(app.config['UPLOAD_FOLDER'], code))
-    os.mkdir(os.path.join(app.config['UPLOAD_FOLDER'], code, 'files'))
-    os.mkdir(os.path.join(app.config['UPLOAD_FOLDER'], code, 'images'))
+    os.mkdir(os.path.join(app.config['UPLOAD_FOLDER'], code, 'file'))
+    os.mkdir(os.path.join(app.config['UPLOAD_FOLDER'], code, 'image'))
 
+    session.permanent = True
     session['event_code'] = code
     session['event_token'] = token
+
+    print(session, code, token)
 
     return jsonify({
         'event_code' : code,
@@ -44,7 +55,8 @@ def admin():
     result = sqlhelper.LoginAsAdmin(token)
     if result is None:
         return jsonify({
-            'valid' : 'False'
+            'valid' : 'False',
+            'error_msg': 'Wrong token'
         })
     else:
         code, title = result
@@ -69,17 +81,21 @@ def join():
         })
     else:
         return jsonify({
-            'valid': 'False'
+            'valid': 'False',
+            'error_msg': 'Event code does not exists'
         })
 
 @app.route('/weshare/insert', methods=['POST'])
 def insert():
-    if 'event_token' not in session:
+    try:
+        token = request.form['eventToken']
+        code, title = sqlhelper.LoginAsAdmin(token)
+    except:
         return jsonify({
-            'valid' : 'False'
+            'valid': 'False',
+            'error_msg': 'Wrong event token'
         })
-
-    code = session['event_code']
+    
     postType = request.form['postType']
     timestamp = datetime.now().strftime('%Y%m%d-%H%M%S')
     if postType in ['text', 'link', 'image', 'file']:
@@ -89,20 +105,22 @@ def insert():
             file = request.files['postFile']
             filename = file.filename.strip().split('/')[-1]
             hashValue = sha256(filename.encode()).hexdigest()
-            filepath = os.path.join(app.config['UPLOAD_FOLDER'], code, postType, f'{hashValue}-{timestamp}')
+            filepath = os.path.join(app.config['UPLOAD_FOLDER'], code, postType, f'{hashValue}-{timestamp}-{filename}')
             content = json.dumps({
                 'filename': filename,
                 'filepath': filepath
-            })
+            }).replace('"', '\'')
             file.save(filepath)
 
+        print(code, postType, content)
         sqlhelper.InsertPost(code, postType, content)
         return jsonify({
             'valid' : 'True'
         })
     else:
         return jsonify({
-            'valid' : 'False'
+            'valid': 'False',
+            'error_msg': 'Wrong post type'
         })
 
 @app.route('/weshare/show', methods=['POST'])
@@ -116,7 +134,7 @@ def show():
                 'content': p[2]
             }
         else:
-            content = json.loads(p[2])
+            content = json.loads(p[2].replace('\'', '"'))
             filename = content['filename']
             filepath = content['filepath']
             return {
@@ -126,14 +144,32 @@ def show():
                 'filepath': filepath
             }
 
-    code = session['event_code']
+    code = request.form['eventCode']
+    print(code)
     posts = list(map(parse, sqlhelper.GetPosts(code)))
+    print(posts)
 
     return jsonify({
         'posts' : posts
     })
 
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-app.config['MAX_CONTENT_LENGTH'] = 64 * 1024 * 1024
-app.secret_key = 'cnlab2020'
-app.run('140.112.29.204', port=48763)
+@app.route('/weshare/destroy', methods=['POST'])
+def destroy():
+    password = request.form['nuclearBombPassword']  # "cnlab2020"
+    if password == "cnlab2020":
+        codes = sqlhelper.GetAllEventCodes()
+        for code in codes:
+            sqlhelper.RemoveEvent(code)
+
+    return jsonify({
+        "valid": "True",
+        "msg": "What a wonderful world!"
+    })
+
+@app.route('/uploads/<path:filepath>', methods=['GET'])
+def download(filepath):
+    uploads = os.path.join(app.config['UPLOAD_FOLDER'])
+    filename = filepath.split('/')[-1][81:]
+    return send_from_directory(directory = uploads, filename = filepath, as_attachment = True, attachment_filename = filename)
+
+app.run('140.112.30.32', port=48764, debug=True)
