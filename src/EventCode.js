@@ -4,6 +4,7 @@ import Form from 'react-bootstrap/Form';
 import TextField from '@material-ui/core/TextField';
 import { Row, Col } from 'reactstrap';
 import axios from 'axios';
+import setting from './Utils.json';
 
 class EventCode extends React.Component {
 
@@ -21,7 +22,7 @@ class EventCode extends React.Component {
         var self = this
         const data = new FormData();
         data.append('eventCode', this.state.eventCode); 
-        axios.post("http://140.112.30.32:48764/weshare/join", data, config)
+        axios.post(setting["url"] + ":" + setting["port"] + "/weshare/join", data, config)
         .then(function (response) {
             console.log('Code exists: ' + response.data['valid'])
             if (response.data['valid'] === 'True') {

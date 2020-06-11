@@ -9,6 +9,7 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import axios from 'axios';
+import setting from './Utils.json';
 
 const useStyles = makeStyles((theme) => ({
 	paper: {
@@ -47,7 +48,7 @@ export default function SignIn(props) {
         const data = new FormData();
         const token = input.current.value
         data.append('eventToken', token); 
-        axios.post("http://140.112.30.32:48764/weshare/admin", data, config, { timeout: 3 })
+        axios.post(setting["url"] + ":" + setting["port"] + "/weshare/admin", data, config, { timeout: 3 })
         .then(function (response) {
             if (response.data['valid'] === "True") {
                 props.handleClick("Teacher")

@@ -2,6 +2,7 @@ import React, {useState}  from 'react';
 import { Row, Col } from 'reactstrap';
 import Button from 'react-bootstrap/Button';
 import axios from 'axios';
+import setting from './Utils.json';
 
 const divStyle = {
     'textAlign': 'center'
@@ -17,8 +18,6 @@ export default function Download(props) {
 
     const [files, setFiles] = useState([])
 
-    console.log(props.firstEntry, props.eventTitle, props.eventCode)
-
     if (props.firstEntry === true && props.eventTitle !== undefined && props.eventCode !== undefined) {
         props.handleEntry(false)
         window.sessionStorage.setItem('eventTitle', props.eventTitle)
@@ -33,9 +32,8 @@ export default function Download(props) {
             'Access-Control-Allow-Origin': '*'}
         }
         const data = new FormData()
-        console.log(eventCode)
         data.append('eventCode', eventCode)
-        axios.post("http://140.112.30.32:48764/weshare/show", data, config)
+        axios.post(setting["url"] + ":" + setting["port"] + "/weshare/show", data, config)
         .then(function (response) {
             setFiles(response.data['posts'])
         })
@@ -46,16 +44,16 @@ export default function Download(props) {
     return (
         <div style={divStyle}>
             <div style={{height: "5vh"}}></div>
-            <p style={textStyle}> Welcome to {eventTitle}</p>
-            {files && [...files].map((f)=>(
+            <p style={textStyle}> Welcome to: {eventTitle}</p>
+            {files && [...files].map((f, num)=>(
                 <div>
                 <hr />
                 <Row>
                     <Col>
-                        <p>{f.type}</p>
+                        <p>{num + 1}</p>
                     </Col>
                     <Col>
-                        <a href={"http://140.112.30.32:48764/" + f.filepath} download={f.filename}>{f.filename}</a>
+                        <a href={setting["url"] + ":" + setting["port"] + "/" + f.filepath} download={f.filename}>{f.filename}</a>
                     </Col>
                     <Col>
                         <p>{f.timestamp}</p>
@@ -63,7 +61,8 @@ export default function Download(props) {
                 </Row>
                 </div>
             ))}
-            <Button onClick={() => handleRefresh()}></Button>
+            <div style={{height: "5vh"}}></div>
+            <Button onClick={() => handleRefresh()}>Click to Update</Button>
         </div>
     )
 }

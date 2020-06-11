@@ -11,6 +11,7 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import axios from 'axios';
+import setting from './Utils.json';
 
 const useStyles = makeStyles((theme) => ({
 	paper: {
@@ -56,7 +57,7 @@ export default function SignUp(props) {
         
         const data = new FormData();
         data.append('eventTitle', title); 
-        axios.post("http://140.112.30.32:48764/weshare/create", data, config, { timeout: 3 })
+        axios.post(setting["url"] + ":" + setting["port"] + "/weshare/create", data, config, { timeout: 3 })
         .then(function (response) {
             props.handleClick("Teacher")
             props.handleEventTitle(title)
