@@ -38,7 +38,8 @@ class SQLHelper:
         if len(result) == 0:
             return None
         else:
-            return result[0][2]
+            # returns event title
+            return result[0][3]
 
     def LoginAsAdmin(self, token):
         assert re.match('[0-9a-zA-Z]{8}', token)
@@ -49,6 +50,7 @@ class SQLHelper:
         if len(result) == 0:
             return None
         else:
+            # returns event code, event title
             return result[0][1], result[0][3]
 
     def CreateEvent(self, title = 'An Excellent Event'):

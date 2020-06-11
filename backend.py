@@ -14,6 +14,11 @@ CORS(app)
 
 sqlhelper = SQLHelper()
 
+# Set permanent session
+@app.before_request
+def make_session_permanent():
+    print(session)
+
 # Only for demo, probabily useless
 @app.route('/weshare/eventCode', methods=['POST'])
 def eventCode():
@@ -29,8 +34,11 @@ def create():
     os.mkdir(os.path.join(app.config['UPLOAD_FOLDER'], code, 'files'))
     os.mkdir(os.path.join(app.config['UPLOAD_FOLDER'], code, 'images'))
 
+    session.permanent = True
     session['event_code'] = code
     session['event_token'] = token
+
+    print(session, code, token)
 
     return jsonify({
         'event_code' : code,
@@ -41,7 +49,7 @@ def create():
 @app.route('/weshare/admin', methods=['POST'])
 def admin():
     token = request.form['eventToken']
-    result = sqlhelper.LoginEventWithToken(token)
+    result = sqlhelper.LoginAsAdmin(token)
     if result is None:
         return jsonify({
             'valid' : 'False'
@@ -135,5 +143,5 @@ def show():
 
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['MAX_CONTENT_LENGTH'] = 64 * 1024 * 1024
-app.secret_key = 'cnlab2020'
-app.run('140.112.29.204', port=48763)
+app.config['SECRET_KEY'] = 'cnlab2020'
+app.run('140.112.30.32', port=48764)
