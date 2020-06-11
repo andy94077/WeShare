@@ -15,6 +15,7 @@ class EventCode extends React.Component {
     }
 
     handleClick = () => {
+        this.props.handleClick("Loading")
         var config = { headers: {
         'content-type': 'multipart/form-data',
         'Access-Control-Allow-Origin': '*'}
@@ -26,17 +27,18 @@ class EventCode extends React.Component {
         .then(function (response) {
             console.log('Code exists: ' + response.data['valid'])
             if (response.data['valid'] === 'True') {
-                window.location.reload()
                 self.props.handleClick("Student")
                 self.props.handleEventTitle(response.data['event_title'])
                 self.props.handleEventCode(self.state.eventCode)
             }
             else {
+                self.props.handleClick("Welcome")
                 self.setState({ codeErrorMes: "code not exists!" })
                 self.setState({ ifError: true })
             }
         })
         .catch(function (error) {
+            self.props.handleClick("Welcome")
             self.setState({ codeErrorMes: "Format error!" })
             self.setState({ ifError: true })
         })

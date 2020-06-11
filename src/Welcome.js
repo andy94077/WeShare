@@ -1,12 +1,13 @@
 import React from 'react';
 import logo from './logo.png';
-import EventCode from './EventCode';
+//import EventCode from './EventCode';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Grid from '@material-ui/core/Grid';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import Button from 'react-bootstrap/Button';
 import axios from 'axios';
+import setting from './Utils.json';
 
 const useStyles = makeStyles((theme) => ({
 	paper: {
@@ -35,16 +36,19 @@ export default function SignIn(props) {
     const classes = useStyles();
     
     const handleClick = () => {
+        console.log('dsfdf')
         var config = { headers: {
             'content-type': 'multipart/form-data',
             'Access-Control-Allow-Origin': '*'}
         }
         const data = new FormData()
         data.append('nuclearBombPassword', "cnlab2020")
-        axios.post("http://140.112.30.32:48764/weshare/destroy", data, config)
+        axios.post(setting["url"] + ":" + setting["port"] + "/weshare/destroy", data, config)
         .then(function (response) {
+            console.log(response.data['valid'])
         })
         .catch(function (error) {
+            console.log("error")
         })
 	}
 

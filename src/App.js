@@ -3,6 +3,7 @@ import './App.css';
 
 import logo from './logo.png';
 import Welcome from './Welcome';
+import Loading from './Loading';
 import EventCode from './EventCode';
 import SignUp from './SignUp';
 import SignIn from './SignIn';
@@ -64,6 +65,8 @@ class App extends React.Component {
 		let currentPage;
 		if (tabIndex === "Welcome")
 			currentPage = <Welcome handleClick={this.handleClick} />
+        else if (tabIndex === "Loading")
+            currentPage = <Loading />
 		else if (tabIndex === "Sign Up")
 			currentPage = <SignUp handleClick={this.handleClick}
                             handleEventTitle={this.handleEventTitle}

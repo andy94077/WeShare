@@ -11,6 +11,7 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import axios from 'axios';
+import Loading from './Loading';
 import setting from './Utils.json';
 
 const useStyles = makeStyles((theme) => ({
@@ -39,10 +40,12 @@ export default function SignUp(props) {
     const input = useRef()
 
     const [ifError, setError] = useState(false);
-    const [errorMes, setErrorMes] = useState('');
+    const [errorMes, setErrorMes] = useState('')
+    const [isLoading, setLoading] = useState(false)
 
     const handleSubmit = () => {
-        
+
+        setLoading(true)
         const title = input.current.value
         if (title === "") {
             setError(true)
@@ -65,8 +68,8 @@ export default function SignUp(props) {
             props.handleEventToken(response.data['event_token'])
         })
         .catch(function (error) {
-            console.log(error)
             setError(true)
+            setLoading(false)
             setErrorMes("Connection Failed!")
         })
     }
@@ -105,7 +108,7 @@ export default function SignUp(props) {
                             />
                         </Grid>
                     </Grid>
-                    <Button
+                    {isLoading ? <Loading /> :  <Button
                         type="submit"
                         fullWidth
                         variant="contained"
@@ -114,7 +117,7 @@ export default function SignUp(props) {
                         onClick={() => handleSubmit()}
                     >
                         Sign Up
-                    </Button>
+                    </Button>}
                     <Grid container justify="flex-end">
                         <Grid item>
                             <a href="/#" onClick={() => props.handleClick("Sign In")}>

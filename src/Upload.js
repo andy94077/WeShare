@@ -39,7 +39,7 @@ export default function Upload(props) {
 
     const [buttonMes1, setButton1] = useState("Copy Token")
     const [files, setFile] = useState([])
-    const [uploadedFiles, setUploaded] = useState([])
+    const [uploadedFiles, setUploaded] = useState()
     const [errorMes, setErrorMes] = useState('')
     const [successMes, setSuccess] = useState('')
 
@@ -79,7 +79,7 @@ export default function Upload(props) {
         .catch(function (error) {
         })
 	}
-    
+
     const handleSubmit = () => {
         setErrorMes("")
         setSuccess("")
@@ -93,9 +93,9 @@ export default function Upload(props) {
         }
         const data = new FormData()
         data.append('eventToken', eventToken)
-        data.append('postType', transType(files[0].type))
-        data.append('postFile', files[0])
-        axios.post(setting["url"] + ":" + setting["port"] + "/weshare/insert", data, config)
+        data.append('postType', transType(files[0]))
+        data.append('postFile', files[0]);
+        return axios.post(setting["url"] + ":" + setting["port"] + "/weshare/insert", data, config)
         .then(function (response) {
             if (response.data['valid'] === "True") {
                 setSuccess("File uploaded!")
@@ -130,8 +130,8 @@ export default function Upload(props) {
                         <Button variant="info" onClick={() => handleSubmit()}>Upload</Button>
                     </div>
                     <div class="custom-file">
-                        <input type="file" class="custom-file-input" 
-                        accept="image/*,text/plain,.pdf,video/*,audio/*,.csv" id="inputGroupFile01" onChange={(e) => handleChange(e)} />
+                        <input type="file" class="custom-file-input"
+                        accept="*" id="inputGroupFile01" onChange={(e) => handleChange(e)} />
                         <label class="custom-file-label" for="inputGroupFile01" data-browse="Browse" >Choose File</label>
                     </div>
                 </div>
@@ -142,7 +142,7 @@ export default function Upload(props) {
                     <hr />
                     <Row>
                         <Col>
-                            <img height="100px" src={URL.createObjectURL(f)} />
+                            <img width="100px" alt="file" src={URL.createObjectURL(f)} />
                         </Col>
                         <Col>
                             <p><br/>Size: {formatBytes(f.size, 2)}</p>
