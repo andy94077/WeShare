@@ -87,15 +87,23 @@ class SQLHelper:
         return code, token
 
     def RemoveEvent(self, code):
-        raise NotImplementedError
-        # TODO: in the future
         assert re.match('[0-9a-zA-Z]{4}', code)
 
-        # Remove event table
         cursor = self.db.cursor()
-        cursor.execute()
+
+        try:
+            # Remove event table
+            cursor.execute(f'DROP TABLE Event_{code}')
+        except:
+            pass
 
         # Remove `EventCodeMapping` instance
+        try:
+            cursor.execute(f'DELETE FROM EventCodeMapping WHERE eventCode = "{code}"')
+        except:
+            pass
+
+        self.db.commit()
 
     def GetPosts(self, code, startID = 1):
         assert re.match('[0-9a-zA-Z]{4}', code)
