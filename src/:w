@@ -37,51 +37,25 @@ function transType(type) {
 export default function Upload(props) {
 
     const [buttonMes1, setButton1] = useState("Copy Token")
+    const [buttonMes2, setButton2] = useState("Copy")
     const [files, setFile] = useState([])
-    const [uploadedFiles, setUploaded] = useState([])
     const [errorMes, setErrorMes] = useState('')
-    const [successMes, setSuccess] = useState('')
-
-    if (props.firstEntry === true && props.eventTitle !== undefined && props.eventCode !== undefined && props.eventToken !== undefined) {
-        props.handleEntry(false)
-        window.sessionStorage.setItem('eventTitle', props.eventTitle)
-        window.sessionStorage.setItem('eventCode', props.eventCode)
-        window.sessionStorage.setItem('eventToken', props.eventToken)
-    }
-    let eventTitle = window.sessionStorage.getItem('eventTitle')
-    let eventCode = window.sessionStorage.getItem('eventCode')
-    let eventToken = window.sessionStorage.getItem('eventToken')
 
     const copyToken1 = (text) => {
         copy(text)
         setButton1("Copied")
     }
-
+    const copyToken2 = (text) => {
+        copy(text)
+        setButton2("Copied")
+    }
     const handleChange = (event) => {
         setErrorMes(" ")
-        setSuccess("")
         setFile(event.target.files)
     }
 	
-    const handleRefresh = () => {
-        var config = { headers: {
-            'content-type': 'multipart/form-data',
-            'Access-Control-Allow-Origin': '*'}
-        }
-        const data = new FormData()
-        console.log(eventCode)
-        data.append('eventCode', eventCode)
-        axios.post("http://140.112.30.32:48764/weshare/show", data, config)
-        .then(function (response) {
-            setUploaded(response.data['posts'])
-        })
-        .catch(function (error) {
-        })
-	}
-    
     const handleSubmit = () => {
         setErrorMes("")
-        setSuccess("")
         if (files[0] === undefined) {
             setErrorMes("Please select a file!")
             return false
@@ -91,14 +65,12 @@ export default function Upload(props) {
             'Access-Control-Allow-Origin': '*'}
         }
         const data = new FormData()
-        data.append('eventToken', eventToken)
         data.append('postType', transType(files[0].type))
         data.append('postFile', files[0])
         axios.post("http://140.112.30.32:48764/weshare/insert", data, config)
         .then(function (response) {
             if (response.data['valid'] === "True") {
-                setSuccess("File uploaded!")
-                handleRefresh()
+                setErrorMes("File uploaded!")
             }
             else {
                 setErrorMes("Session Invalid!")
@@ -109,17 +81,33 @@ export default function Upload(props) {
         })
 	}
 
+    console.log("entry: " + props.firstEntry)
+    console.log(props.eventTitle, props.eventCode, props.eventToken)
+    
+    if (props.firstEntry === true && props.eventTitle !== undefined && props.eventCode !== undefined && props.eventToken !== undefined) {
+        props.handleEntry(false)
+        window.sessionStorage.setItem('eventTitle', props.eventTitle)
+        window.sessionStorage.setItem('eventCode', props.eventCode)
+        window.sessionStorage.setItem('eventToken', props.eventToken)
+    }
+    let eventTitle = window.sessionStorage.getItem('eventTitle')
+    let eventCode = window.sessionStorage.getItem('eventCode')
+    let eventToken = window.sessionStorage.getItem('eventToken')
+
 	return (
         <div style={uploadStyle}>
             <div>
                 <div style={{height: "5vh"}}></div>
-                <Row className="show-grid" float="center">
-                    <Col xs={12} xsOffset={6}>
+                <Row>
+                    <Col xs={5}>
                         <p style={textStyle}> {eventTitle} - Event Code: {eventCode}</p>
+                    </Col>
+                    <Col xs={5}>
+                        <Button className="float-right" variant="secondary" size="sm" onClick={() => copyToken2(eventToken)}>{buttonMes2}</Button> 
                     </Col>
                 </Row>
                 <Row style={{ flex: 1, flexDirection: 'row', justifyContent: 'flex-end' }}>
-                    <Button className="float-right" variant="secondary" size="sm" onClick={() => copyToken1(eventToken)}>{buttonMes1}</Button>
+                    <Button className="float-right" variant="secondary" size="sm" onClick={() => copyToken1(eventCode)}>{buttonMes1}</Button>
                 </Row>
             </div>
             <div style={{height: "10vh"}}></div>
@@ -133,42 +121,20 @@ export default function Upload(props) {
                         <label class="custom-file-label" for="inputGroupFile01" data-browse="瀏覽" >選擇檔案</label>
                     </div>
                 </div>
-                <p style={{ color: "red" }}>{errorMes}</p>
-                <p style={{ color: "green" }}>{successMes}</p>
-                {files && [...files].map((f)=>(
-                    <div>
-                    <hr />
-                    <Row>
-                        <Col>
-                            <img height="100px" src={URL.createObjectURL(f)} />
-                        </Col>
-                        <Col>
-                            <p><br/>Size: {formatBytes(f.size, 2)}</p>
-                        </Col>
-                        <Col>
-                            <p><br/>Type: {f.type}</p>
-                        </Col>
-                        <Col>
-                        </Col>
-                    </Row>
-                    </div>
-                ))}
             </Alert>
-            {uploadedFiles && [...uploadedFiles].map((f)=>(
-                <div>
-                <hr />
+            <p style={{ color: "red" }}>{errorMes}</p>
+            {files && [...files].map((f)=>(
                 <Row>
                     <Col>
-                        <p>{f.type}</p>
+                        <img height="100px" src={URL.createObjectURL(f)} />
                     </Col>
                     <Col>
-                        <a href={"http://140.112.30.32:48764/" + f.filepath} download={f.filename}>{f.filename}</a>
+                        <p><br/>Size: {formatBytes(f.size, 2)}</p>
                     </Col>
                     <Col>
-                        <p>{f.timestamp}</p>
+                        <p><br/>Type: {f.type}</p>
                     </Col>
                 </Row>
-                </div>
             ))}
         </div>
 	)

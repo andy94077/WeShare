@@ -56,7 +56,7 @@ export default function SignUp(props) {
         
         const data = new FormData();
         data.append('eventTitle', title); 
-        axios.post("http://140.112.30.32:48763/weshare/create", data, config, { timeout: 3 })
+        axios.post("http://140.112.30.32:48764/weshare/create", data, config, { timeout: 3 })
         .then(function (response) {
             props.handleClick("Teacher")
             props.handleEventTitle(title)

@@ -47,7 +47,7 @@ export default function SignIn(props) {
         const data = new FormData();
         const token = input.current.value
         data.append('eventToken', token); 
-        axios.post("http://140.112.30.32:48763/weshare/admin", data, config, { timeout: 3 })
+        axios.post("http://140.112.30.32:48764/weshare/admin", data, config, { timeout: 3 })
         .then(function (response) {
             if (response.data['valid'] === "True") {
                 props.handleClick("Teacher")

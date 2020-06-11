@@ -1,14 +1,15 @@
 import React from 'react';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
-import FormControl from 'react-bootstrap/FormControl';
+import TextField from '@material-ui/core/TextField';
+import { Row, Col } from 'reactstrap';
 import axios from 'axios';
 
 class EventCode extends React.Component {
 
     constructor() {
         super()
-        this.state = ({ codeErrorMes: '' })
+        this.state = ({ codeErrorMes: '', ifError: false })
         this.eventCode = React.createRef()
     }
 
@@ -20,45 +21,57 @@ class EventCode extends React.Component {
         var self = this
         const data = new FormData();
         data.append('eventCode', this.state.eventCode); 
-        axios.post("http://140.112.30.32:48763/weshare/join", data, config)
+        axios.post("http://140.112.30.32:48764/weshare/join", data, config)
         .then(function (response) {
             console.log('Code exists: ' + response.data['valid'])
             if (response.data['valid'] === 'True') {
+                window.location.reload()
                 self.props.handleClick("Student")
                 self.props.handleEventTitle(response.data['event_title'])
-                console.log(response.data['event_title'])
+                self.props.handleEventCode(self.state.eventCode)
             }
             else {
-                self.setState({ eventCode: "Event code not exists!" })
-                self.props.handleClick("Welcome")
+                self.setState({ codeErrorMes: "code not exists!" })
+                self.setState({ ifError: true })
             }
         })
         .catch(function (error) {
+            self.setState({ codeErrorMes: "Format error!" })
+            self.setState({ ifError: true })
         })
     }
 
     handleChange = () => {
         this.setState({ codeErrorMes: '' })
         this.setState({ eventCode: this.eventCode.current.value })
+        this.setState({ ifError: false })
     }
 
     render() {
-        const errorStyle = { 'color': 'red' }
-        let codeErrorMes = this.state.codeErrorMes
         return (
             <div>
-                <div style={errorStyle}>
-                    {codeErrorMes}&nbsp;&nbsp; 
-                </div>
                 <Form inline>
-                <FormControl
-                    type="text" ref={this.eventCode} 
-                    placeholder="Have an event code?" 
-                    className="mr-sm-2" 
-                    onChange={() => this.handleChange()}
-                />
-                <Button variant="outline-success" onClick={() => this.handleClick()}>Join Now</Button>
-              </Form>
+                    <Row>
+                        <p style={{ color: "red" }}><br/>{this.state.codeErrorMes}</p>
+                        <Col>
+                            <TextField
+                                fullWidth
+                                margin="dense"
+                                error={this.state.ifError}
+                                variant="outlined"
+                                name="eventCode"
+                                label="event code"
+                                id="eventCode"
+                                inputRef={this.eventCode}
+                                onChange={() => this.handleChange()}
+                            />
+                        </Col>
+                        <Col>
+                            <div style={{ height: "10px" }}></div>
+                        <Button variant="outline-primary" onClick={() => this.handleClick()}>Join Now</Button>
+                        </Col>
+                    </Row>
+                </Form>
             </div>
         )
     }

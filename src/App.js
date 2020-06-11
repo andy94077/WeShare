@@ -19,7 +19,7 @@ function Copyright() {
 	return (
 		<Typography variant="body2" color="textSecondary" align="center">
 			{'Copyright © '}
-				WeShare. All rights reserved. 2020 WeShare.
+				2020 WeShare. All rights reserved.
 		</Typography>
 	);
 }
@@ -29,16 +29,23 @@ class App extends React.Component {
 		super()
 		this.state = ({ tabIndex: 'Welcome', codeErrorMes: '' })
 		if (window.sessionStorage.getItem('tabIndex') !== null) {
-			this.state = ({ tabIndex: window.sessionStorage.getItem('tabIndex') })
+            this.state = ({ tabIndex: window.sessionStorage.getItem('tabIndex'), navExpanded: false, firstEntry: true })
 		}
         this.handleClick = this.handleClick.bind(this)
         this.handleEventCode = this.handleEventCode.bind(this)
         this.handleEventTitle = this.handleEventTitle.bind(this)
         this.handleEventToken = this.handleEventToken.bind(this)
 	}
+    setNavExpanded = (status) => {
+        if (status === false) this.setState({ navExpanded: false})
+        else this.setState({ navExpanded: this.state.navExpanded ? false : true })
+    }
 	handleClick = (key) => {
+        this.setState({ firstEntry: true })
         window.sessionStorage.setItem('tabIndex', key)
         this.setState({ tabIndex: key })
+        if (key !== "Welcome" || this.state.navExpanded)
+            this.setNavExpanded(false)
 	}
     handleEventCode = (code) => {
         this.setState({ activateEventCode: code })
@@ -48,6 +55,9 @@ class App extends React.Component {
     }
     handleEventToken = (token) => {
         this.setState({ activateEventToken: token })
+    }
+    handleEntry = (entry) => {
+        this.setState({ firstEntry: entry })
     }
 	render() {
 		const tabIndex = this.state.tabIndex;
@@ -69,17 +79,22 @@ class App extends React.Component {
 		else if (tabIndex === "About Us")
 			currentPage = <Contribution />
 		else if (tabIndex === "Teacher")
-			currentPage = <Upload eventTitle={this.state.activateEventTitle} 
+			currentPage = <Upload firstEntry={this.state.firstEntry}
+                            handleEntry={this.handleEntry}
+                            eventTitle={this.state.activateEventTitle} 
                             eventCode={this.state.activateEventCode} 
                             eventToken={this.state.activateEventToken} />
 		else if (tabIndex === "Student")
-			currentPage = <Download eventTitle={this.state.activateEventTitle} />
+			currentPage = <Download firstEntry={this.state.firstEntry}
+                            handleEntry={this.handleEntry}
+                            eventTitle={this.state.activateEventTitle}
+                            eventCode={this.state.activateEventCode} />
 		return (
 		<div>
-			<Navbar bg="light" expand="lg">
-				<Navbar.Brand onClick={() => this.handleClick('Welcome')}><img src={logo} alt="logo" height="50px"></img>WeShare</Navbar.Brand>
+            <Navbar bg="light" expand="lg" onToggle={() => this.setNavExpanded(true)} expanded={this.state.navExpanded} >
+				<Navbar.Brand onClick={() => this.handleClick('Welcome')}><img src={logo} alt="logo" height="50px"></img>WeShare β</Navbar.Brand>
 				<Navbar.Toggle aria-controls="basic-navbar-nav" />
-				<Navbar.Collapse id="basic-navbar-nav">
+				<Navbar.Collapse id="basic-navbar-nav" >
 					<Nav className="mr-auto">
 						<NavDropdown title="Instructor" id="basic-nav-dropdown">
 							<NavDropdown.Item onClick={() => this.handleClick("Sign Up")}>Sign Up</NavDropdown.Item>
@@ -88,7 +103,7 @@ class App extends React.Component {
 						<Nav.Link onClick={() => this.handleClick("Tutorial")}>Tutorial</Nav.Link>
 						<Nav.Link onClick={() => this.handleClick("About Us")}>About Us</Nav.Link>
 					</Nav>
-                    <EventCode handleClick={this.handleClick} handleEventTitle={this.handleEventTitle} />
+                    <EventCode handleClick={this.handleClick} handleEventTitle={this.handleEventTitle} handleEventCode={this.handleEventCode} />
 				</Navbar.Collapse>
 			</Navbar>
 			<div>
