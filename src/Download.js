@@ -17,6 +17,7 @@ const textStyle = {
 export default function Download(props) {
 
     const [files, setFiles] = useState([])
+    const [errorMes, setMes] = useState("")
 
     if (props.firstEntry === true && props.eventTitle !== undefined && props.eventCode !== undefined) {
         props.handleEntry(false)
@@ -36,8 +37,12 @@ export default function Download(props) {
         axios.post(setting["url"] + ":" + setting["port"] + "/weshare/show", data, config)
         .then(function (response) {
             setFiles(response.data['posts'])
+            if (files.length === 0) {
+                setMes("Currently no file!")
+            }
         })
         .catch(function (error) {
+            setMes("Server error!")
         })
 	}
 
@@ -45,6 +50,7 @@ export default function Download(props) {
         <div style={divStyle}>
             <div style={{height: "5vh"}}></div>
             <p style={textStyle}> Welcome to: {eventTitle}</p>
+            <p style={{ color: "red" }}>{errorMes}</p>
             {files && [...files].map((f, num)=>(
                 <div>
                 <hr />

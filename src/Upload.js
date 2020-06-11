@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import Button from 'react-bootstrap/Button';
 import {Alert} from 'react-bootstrap';
 import { Row, Col } from 'reactstrap';
@@ -44,6 +44,8 @@ export default function Upload(props) {
     const [errorMes, setErrorMes] = useState('')
     const [successMes, setSuccess] = useState('')
     const [isLoading, setLoading] = useState(false)
+
+    console.log(props.firstEntry , props.eventTitle, props.eventCode, props.eventToken)
 
     if (props.firstEntry === true && props.eventTitle !== undefined && props.eventCode !== undefined && props.eventToken !== undefined) {
         props.handleEntry(false)

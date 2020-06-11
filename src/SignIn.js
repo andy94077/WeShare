@@ -44,6 +44,9 @@ export default function SignIn(props) {
     const handleSubmit = () => {
 
         setLoading(true)
+        props.handleEventTitle(undefined)
+        props.handleEventCode(undefined)
+        props.handleEventToken(undefined)
         var config = { headers: {
         'content-type': 'multipart/form-data',
         'Access-Control-Allow-Origin': '*'}
