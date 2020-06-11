@@ -5,6 +5,7 @@ import { Row, Col } from 'reactstrap';
 import copy from 'copy-to-clipboard';
 import axios from 'axios';
 import setting from './Utils.json';
+import Loading from './Loading';
 
 const uploadStyle = {
 	'marginLeft': '5%',
@@ -42,6 +43,7 @@ export default function Upload(props) {
     const [uploadedFiles, setUploaded] = useState()
     const [errorMes, setErrorMes] = useState('')
     const [successMes, setSuccess] = useState('')
+    const [isLoading, setLoading] = useState(false)
 
     if (props.firstEntry === true && props.eventTitle !== undefined && props.eventCode !== undefined && props.eventToken !== undefined) {
         props.handleEntry(false)
@@ -83,6 +85,7 @@ export default function Upload(props) {
     const handleSubmit = () => {
         setErrorMes("")
         setSuccess("")
+        setLoading(true)
         if (files[0] === undefined) {
             setErrorMes("Please select a file!")
             return false
@@ -104,9 +107,11 @@ export default function Upload(props) {
             else {
                 setErrorMes("Session Invalid!")
             }
+            setLoading(false)
         })
         .catch(function (error) {
             setErrorMes("Server error!!")
+            setLoading(false)
         })
 	}
 
@@ -125,7 +130,7 @@ export default function Upload(props) {
             </div>
             <div style={{height: "10vh"}}></div>
             <Alert variant='dark'>
-                <div class="input-group mb-3">
+                {isLoading ? <Loading /> : <div class="input-group mb-3">
                     <div class="input-group-prepend">
                         <Button variant="info" onClick={() => handleSubmit()}>Upload</Button>
                     </div>
@@ -134,7 +139,7 @@ export default function Upload(props) {
                         accept="*" id="inputGroupFile01" onChange={(e) => handleChange(e)} />
                         <label class="custom-file-label" for="inputGroupFile01" data-browse="Browse" >Choose File</label>
                     </div>
-                </div>
+                </div>}
                 <p style={{ color: "red" }}>{errorMes}</p>
                 <p style={{ color: "green" }}>{successMes}</p>
                 {files && [...files].map((f)=>(
@@ -148,9 +153,7 @@ export default function Upload(props) {
                             <p><br/>Size: {formatBytes(f.size, 2)}</p>
                         </Col>
                         <Col>
-                            <p><br/>Type: {f.type}</p>
-                        </Col>
-                        <Col>
+                            <p><br/>Type: { f.type.length > 15 ? f.type.substring(0, 15) + "..." : f.type === "" ? "unknown" : f.type }</p>
                         </Col>
                     </Row>
                     </div>
