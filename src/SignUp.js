@@ -45,6 +45,10 @@ export default function SignUp(props) {
 
     const handleSubmit = () => {
 
+        props.handleEventTitle(undefined)
+        props.handleEventCode(undefined)
+        props.handleEventToken(undefined)
+
         setLoading(true)
         const title = input.current.value
         if (title === "") {

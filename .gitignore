@@ -1,2 +1,15 @@
 node_modules
 
+# Frontend
+yarn.lock
+yarn-error.log
+package-lock.json
+
+# Backend
+.vscode/
+venv/
+__pycache__/
+uploads
+
+# SQL secret
+secret.py

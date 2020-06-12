@@ -42,7 +42,7 @@ class App extends React.Component {
         else this.setState({ navExpanded: this.state.navExpanded ? false : true })
     }
 	handleClick = (key) => {
-        this.setState({ firstEntry: true })
+        this.handleEntry(true)
         window.sessionStorage.setItem('tabIndex', key)
         this.setState({ tabIndex: key })
         if (key !== "Welcome" || this.state.navExpanded)
