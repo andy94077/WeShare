@@ -87,6 +87,7 @@ export default function SignIn(props) {
 				</Typography>
 				<div className={classes.form} noValidate>
 					<TextField
+                        type="password"
                         error={ifError}
 						variant="outlined"
 						margin="normal"
