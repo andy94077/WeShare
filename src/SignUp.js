@@ -53,6 +53,7 @@ export default function SignUp(props) {
         const title = input.current.value
         if (title === "") {
             setError(true)
+            setLoading(false)
             setErrorMes("Must have an event title!")
             return false
         } 
