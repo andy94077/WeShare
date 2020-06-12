@@ -58,7 +58,7 @@ export default function SignIn(props) {
 			<div className={classes.paper}>
                 <img src={logo} alt="logo" height="300px"></img>
                 {/*<EventCode />*/}
-                <Button variant="danger" size="sm" onClick={() => handleClick()}>Don't Push</Button>
+                {/*<Button variant="danger" size="sm" onClick={() => handleClick()}>Don't Push</Button>*/}
                 <div style={{height: "5vh"}}></div>
                 <Grid ontainer justify="flex-end">
                     <Grid item>

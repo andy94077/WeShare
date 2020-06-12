@@ -45,8 +45,6 @@ export default function Upload(props) {
     const [successMes, setSuccess] = useState('')
     const [isLoading, setLoading] = useState(false)
 
-    console.log(props.firstEntry , props.eventTitle, props.eventCode, props.eventToken)
-
     if (props.firstEntry === true && props.eventTitle !== undefined && props.eventCode !== undefined && props.eventToken !== undefined) {
         props.handleEntry(false)
         window.sessionStorage.setItem('eventTitle', props.eventTitle)
@@ -90,6 +88,7 @@ export default function Upload(props) {
         setLoading(true)
         if (files[0] === undefined) {
             setErrorMes("Please select a file!")
+            setLoading(false)
             return false
         }
         var config = { headers: {
@@ -177,6 +176,8 @@ export default function Upload(props) {
                 </Row>
                 </div>
             ))}
+            <div style={{height: "5vh"}}></div>
+            { isLoading ? <Loading /> : <Button onClick={() => handleRefresh()}>Click to Update</Button> }
         </div>
 	)
 
