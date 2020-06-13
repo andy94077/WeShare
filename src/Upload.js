@@ -44,6 +44,7 @@ export default function Upload(props) {
     const [errorMes, setErrorMes] = useState('')
     const [successMes, setSuccess] = useState('')
     const [isLoading, setLoading] = useState(false)
+    const [showUpload, setShowUp] = useState(true)
 
     if (props.firstEntry === true && props.eventTitle !== undefined && props.eventCode !== undefined && props.eventToken !== undefined) {
         props.handleEntry(false)
@@ -77,6 +78,11 @@ export default function Upload(props) {
         axios.post(setting["url"] + ":" + setting["port"] + "/weshare/show", data, config)
         .then(function (response) {
             setUploaded(response.data['posts'])
+            if (uploadedFiles.length === 63) {
+                setShowUp(false)
+                setSuccess("")
+                setErrorMes("Reach file limit!")
+            }
         })
         .catch(function (error) {
         })
@@ -131,7 +137,7 @@ export default function Upload(props) {
             </div>
             <div style={{height: "10vh"}}></div>
             <Alert variant='dark'>
-                {isLoading ? <Loading /> : <div class="input-group mb-3">
+                {isLoading ? <Loading /> : showUpload ? <div class="input-group mb-3">
                     <div class="input-group-prepend">
                         <Button variant="info" onClick={() => handleSubmit()}>Upload</Button>
                     </div>
@@ -140,7 +146,7 @@ export default function Upload(props) {
                         accept="*" id="inputGroupFile01" onChange={(e) => handleChange(e)} />
                         <label class="custom-file-label" for="inputGroupFile01" data-browse="Browse" >Choose File</label>
                     </div>
-                </div>}
+                </div> : <div></div>}
                 <p style={{ color: "red" }}>{errorMes}</p>
                 <p style={{ color: "green" }}>{successMes}</p>
                 {files && [...files].map((f)=>(
