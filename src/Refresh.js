@@ -7,7 +7,7 @@ import Loading from './Loading';
 export default function Refresh(props) {
 
     const toUrl = (content) => {
-        var urlRegex = /(https:\/\/|http:\/\/)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/gi
+        var urlRegex = /(https:\/\/|http:\/\/)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&//=]*)/gi
         return content.replace(urlRegex, function(url) {
             return '<a target="_blank" rel="noopener noreferrer" href="' + 
                 (!url.match(/^[a-zA-Z]+:\/\//) ? 'http://' + url : url) + '">' + url + '</a>'
@@ -21,7 +21,7 @@ export default function Refresh(props) {
     return (
         <div>
             {uploadedFiles && [...uploadedFiles].map((f, num)=>(
-            <div>
+            <div key={"files" + num}>
                 <hr />
                 <Row>
                     <Col>

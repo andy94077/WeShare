@@ -76,7 +76,6 @@ export default function Upload(props) {
             'Access-Control-Allow-Origin': '*'}
         }
         const data = new FormData()
-        console.log(eventCode)
         data.append('eventCode', eventCode)
         axios.post(setting["url"] + ":" + setting["port"] + "/weshare/show", data, config)
         .then(function (response) {
@@ -143,7 +142,7 @@ export default function Upload(props) {
             <div>
                 <div style={{height: "5vh"}}></div>
                 <Row className="show-grid" float="center">
-                    <Col xs={12} xsOffset={6}>
+                    <Col xs={12}>
                         <p style={textStyle}> {eventTitle} - {eventCode}</p>
                     </Col>
                 </Row>
@@ -154,7 +153,7 @@ export default function Upload(props) {
             <div style={{height: "10vh"}}></div>
             <Alert variant='dark'>
                 {isLoading ? <Loading /> : showUpload ? 
-                    <div class="input-group mb-3">
+                    <div className="input-group mb-3">
                         <TextField
                             placeholder="Enter text or url..."
                             fullWidth
@@ -162,13 +161,13 @@ export default function Upload(props) {
                             label="Enter text or url..."
                             inputRef={input}
                         />
-                        <div class="input-group-prepend">
+                        <div className="input-group-prepend">
                             <Button variant="info" onClick={() => handleSubmit(0)}>Upload</Button>
                         </div>
-                        <div class="custom-file">
-                            <input type="file" class="custom-file-input"
+                        <div className="custom-file">
+                            <input type="file" className="custom-file-input"
                             accept="*" id="inputGroupFile01" onChange={(e) => handleChange(e)} />
-                            <label class="custom-file-label" for="inputGroupFile01" data-browse="" >Or choose a File</label>
+                            <label className="custom-file-label" htmlFor="inputGroupFile01" data-browse="" >Or choose a File</label>
                         </div>
                 </div> : <div></div>}
                 <p style={{ color: "red" }}>{errorMes}</p>

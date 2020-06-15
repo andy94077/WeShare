@@ -25,7 +25,6 @@ class EventCode extends React.Component {
         data.append('eventCode', this.state.eventCode); 
         axios.post(setting["url"] + ":" + setting["port"] + "/weshare/join", data, config)
         .then(function (response) {
-            console.log('Code exists: ' + response.data['valid'])
             if (response.data['valid'] === 'True') {
                 self.props.handleClick("Student")
                 self.props.handleEventTitle(response.data['event_title'])

@@ -109,7 +109,7 @@ class App extends React.Component {
                     <EventCode handleClick={this.handleClick} handleEventTitle={this.handleEventTitle} handleEventCode={this.handleEventCode} />
 				</Navbar.Collapse>
 			</Navbar>
-			<div>
+			<div className="basket">
 				{currentPage}
 			</div>
 			<Box mt={5}>

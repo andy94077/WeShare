@@ -1,9 +1,6 @@
 import React, {useState}  from 'react';
-import { Row, Col } from 'reactstrap';
-import Button from 'react-bootstrap/Button';
 import axios from 'axios';
 import setting from './Utils.json';
-import Loading from './Loading';
 import Refresh from './Refresh';
 
 const divStyle = {
@@ -43,7 +40,6 @@ export default function Download(props) {
         axios.post(setting["url"] + ":" + setting["port"] + "/weshare/show", data, config)
         .then(function (response) {
             setFiles(response.data['posts'])
-            console.log(response.data['posts'].length)
             if (response.data['posts'].length === 0) {
                 setMes("Currently no file!")
             }
