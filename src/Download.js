@@ -4,6 +4,7 @@ import Button from 'react-bootstrap/Button';
 import axios from 'axios';
 import setting from './Utils.json';
 import Loading from './Loading';
+import Refresh from './Refresh';
 
 const divStyle = {
     'textAlign': 'center'
@@ -12,7 +13,7 @@ const divStyle = {
 const textStyle = {
     'fontSize': '28px',
     'color': 'black',
-    'textAlign': 'center'
+    'textAlign': 'center',
 }
 
 export default function Download(props) {
@@ -59,24 +60,7 @@ export default function Download(props) {
             <div style={{height: "5vh"}}></div>
             <p style={textStyle}> Welcome to: {eventTitle}</p>
             <p style={{ color: "red" }}>{errorMes}</p>
-            {files && [...files].map((f, num)=>(
-                <div>
-                <hr />
-                <Row>
-                    <Col>
-                        <p>{num + 1}</p>
-                    </Col>
-                    <Col>
-                        <a href={setting["url"] + ":" + setting["port"] + "/" + f.filepath} download={f.filename}>{f.filename}</a>
-                    </Col>
-                    <Col>
-                        <p>{f.timestamp}</p>
-                    </Col>
-                </Row>
-                </div>
-            ))}
-            <div style={{height: "5vh"}}></div>
-            { isLoading ? <Loading /> : <Button onClick={() => handleRefresh()}>Click to Update</Button> }
+            <Refresh uploadedFiles={files} isLoading={isLoading} handleSubmit={handleRefresh} />
         </div>
     )
 }
