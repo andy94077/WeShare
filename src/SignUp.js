@@ -121,7 +121,7 @@ export default function SignUp(props) {
                         <Grid item xs={12}>
                             <FormControlLabel
                                 control={<Checkbox value="allowExtraEmails" color="primary" />}
-                                label="I have read and accept the terms and conditions and the privacy policy."
+                                label="I have read and accept the terms and privacy policy."
                                 onChange={() => handleCheck()}
                             />
                         </Grid>

@@ -55,7 +55,7 @@ class EventCode extends React.Component {
                 <Form inline>
                     <Row>
                         <p style={{ color: "red" }}><br/>{this.state.codeErrorMes}</p>
-                        <Col>
+                        <Col style={{ textAlign: "left" }}>
                             <TextField
                                 fullWidth
                                 margin="dense"
@@ -69,9 +69,9 @@ class EventCode extends React.Component {
                                 onKeyDown={e => { if (e.keyCode === 13)  e.preventDefault() }}
                             />
                         </Col>
-                        <Col>
+                        <Col style={{textAlign: "right"}}>
                             <div style={{ height: "10px" }}></div>
-                        <Button variant="outline-primary" onClick={() => this.handleClick()}>Join Now</Button>
+                            <Button variant="outline-primary" onClick={() => this.handleClick()}>Join Now</Button>
                         </Col>
                     </Row>
                 </Form>

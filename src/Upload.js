@@ -161,13 +161,14 @@ export default function Upload(props) {
                             label="Enter text or url..."
                             inputRef={input}
                         />
-                        <div className="input-group-prepend">
-                            <Button variant="info" onClick={() => handleSubmit(0)}>Upload</Button>
-                        </div>
                         <div className="custom-file">
                             <input type="file" className="custom-file-input"
                             accept="*" id="inputGroupFile01" onChange={(e) => handleChange(e)} />
                             <label className="custom-file-label" htmlFor="inputGroupFile01" data-browse="" >Or choose a File</label>
+                        </div>
+                        &nbsp;
+                        <div>
+                            <Button variant="info" onClick={() => handleSubmit(0)}>Upload</Button>
                         </div>
                 </div> : <div></div>}
                 <p style={{ color: "red" }}>{errorMes}</p>

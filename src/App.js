@@ -106,7 +106,11 @@ class App extends React.Component {
 						<Nav.Link onClick={() => this.handleClick("Tutorial")}>Tutorial</Nav.Link>
 						<Nav.Link onClick={() => this.handleClick("About Us")}>About Us</Nav.Link>
 					</Nav>
-                    <EventCode handleClick={this.handleClick} handleEventTitle={this.handleEventTitle} handleEventCode={this.handleEventCode} />
+                    <EventCode
+                        handleClick={this.handleClick}
+                        handleEventTitle={this.handleEventTitle}
+                        handleEventCode={this.handleEventCode}
+                    />
 				</Navbar.Collapse>
 			</Navbar>
 			<div className="basket">

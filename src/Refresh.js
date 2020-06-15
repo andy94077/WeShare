@@ -19,22 +19,27 @@ export default function Refresh(props) {
     let handleSubmit = props.handleSubmit
 
     return (
-        <div>
-            {uploadedFiles && [...uploadedFiles].map((f, num)=>(
+        <div style={{ width: "95%", float: "none", margin: "0 auto" }} >
+            {uploadedFiles && [...uploadedFiles].reverse().map((f, num)=>(
             <div key={"files" + num}>
                 <hr />
                 <Row>
-                    <Col>
-                        <p>{num + 1}</p>
+                    <Col style={{ textAlign: "left" }}>
+                        <p style={{ color: "gray" }}>{num + 1}</p>
                     </Col>
-                    <Col>
+                    <Col style={{ textAlign: "right" }}>
+                        <p style={{ color: "gray" }}>{f.timestamp.substring(11, 100)}</p>
+                    </Col>
+                </Row>
+                <Row>
+                    <Col xs={1}></Col>
+                    <Col style={{ overflow: "auto" }}>
                         {f.type !== "text" ?
-                            <a href={setting["url"] + ":" + setting["port"] + "/" + f.filepath} download={f.filename}>{f.filename}</a>:
-                            <div><p dangerouslySetInnerHTML={{__html: toUrl(f.content)}} /></div>}
+                            <p><a href={setting["url"] + ":" + setting["port"] + "/" + f.filepath} download={f.filename}>{
+                                f.filename.length > 100 ? f.filename.substring(0, 100) + "..." : f.filename}</a></p> :
+                            <p dangerouslySetInnerHTML={{__html: toUrl(f.content)}}></p>}
                     </Col>
-                    <Col>
-                        <p>{f.timestamp}</p>
-                    </Col>
+                    <Col xs={1}></Col>
                 </Row>
             </div>
         ))}
