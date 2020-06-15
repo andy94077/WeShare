@@ -25,7 +25,7 @@ class SQLHelper:
         assert re.match('[0-9a-zA-Z]{4}', code)
 
         cursor = self.db.cursor()
-        cursor.execute(f'SELECT * FROM EventCodeMapping WHERE eventCode="{code}"')
+        cursor.execute(f'SELECT * FROM EventCodeMapping WHERE BINARY eventCode="{code}"')
         result = cursor.fetchall()
         return len(result) == 1
 
@@ -33,7 +33,7 @@ class SQLHelper:
         assert re.match('[0-9a-zA-Z]{4}', code)
 
         cursor = self.db.cursor()
-        cursor.execute(f'SELECT * FROM EventCodeMapping WHERE eventCode="{code}"')
+        cursor.execute(f'SELECT * FROM EventCodeMapping WHERE BINARY eventCode="{code}"')
         result = cursor.fetchall()
         if len(result) == 0:
             return None
@@ -45,7 +45,7 @@ class SQLHelper:
         assert re.match('[0-9a-zA-Z]{8}', token)
 
         cursor = self.db.cursor()
-        cursor.execute(f'SELECT * FROM EventCodeMapping WHERE eventToken="{token}"')
+        cursor.execute(f'SELECT * FROM EventCodeMapping WHERE BINARY eventToken="{token}"')
         result = cursor.fetchall()
         if len(result) == 0:
             return None
@@ -99,7 +99,7 @@ class SQLHelper:
 
         # Remove `EventCodeMapping` instance
         try:
-            cursor.execute(f'DELETE FROM EventCodeMapping WHERE eventCode = "{code}"')
+            cursor.execute(f'DELETE FROM EventCodeMapping WHERE BINARY eventCode = "{code}"')
         except:
             pass
 

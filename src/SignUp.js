@@ -39,7 +39,8 @@ export default function SignUp(props) {
     const classes = useStyles()
     const input = useRef()
 
-    const [ifError, setError] = useState(false);
+    const [isCheck, setCheck] = useState(false)
+    const [ifError, setError] = useState(false)
     const [errorMes, setErrorMes] = useState('')
     const [isLoading, setLoading] = useState(false)
 
@@ -57,6 +58,13 @@ export default function SignUp(props) {
             setErrorMes("Must have an event title!")
             return false
         } 
+
+        if (isCheck === false) {
+            setError(true)
+            setLoading(false)
+            setErrorMes("Please check the policy!")
+            return false
+        }
 
         var config = { headers: {
         'content-type': 'multipart/form-data',
@@ -77,6 +85,10 @@ export default function SignUp(props) {
             setLoading(false)
             setErrorMes("Connection Failed!")
         })
+    }
+
+    const handleCheck = () => {
+        setCheck(!isCheck)
     }
 
     return (
@@ -110,6 +122,7 @@ export default function SignUp(props) {
                             <FormControlLabel
                                 control={<Checkbox value="allowExtraEmails" color="primary" />}
                                 label="I have read and accept the terms and conditions and the privacy policy."
+                                onChange={() => handleCheck()}
                             />
                         </Grid>
                     </Grid>

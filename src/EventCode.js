@@ -66,6 +66,7 @@ class EventCode extends React.Component {
                                 id="eventCode"
                                 inputRef={this.eventCode}
                                 onChange={() => this.handleChange()}
+                                onKeyDown={e => { e.preventDefault() }}
                             />
                         </Col>
                         <Col>
