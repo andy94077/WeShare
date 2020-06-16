@@ -49,15 +49,9 @@ export default function Upload(props) {
     const [isLoading, setLoading] = useState(false)
     const [showUpload, setShowUp] = useState(true)
 
-    if (props.firstEntry === true && props.eventTitle !== undefined && props.eventCode !== undefined && props.eventToken !== undefined) {
-        props.handleEntry(false)
-        window.sessionStorage.setItem('eventTitle', props.eventTitle)
-        window.sessionStorage.setItem('eventCode', props.eventCode)
-        window.sessionStorage.setItem('eventToken', props.eventToken)
-    }
-    let eventTitle = window.sessionStorage.getItem('eventTitle')
-    let eventCode = window.sessionStorage.getItem('eventCode')
-    let eventToken = window.sessionStorage.getItem('eventToken')
+    let eventCode = props.eventCode
+    let eventTitle = props.eventTitle
+    let eventToken = props.eventToken
 
     const copyToken1 = (text) => {
         copy(text)

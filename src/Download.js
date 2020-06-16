@@ -19,13 +19,8 @@ export default function Download(props) {
     const [errorMes, setMes] = useState("")
     const [isLoading, setLoading] = useState(false)
 
-    if (props.firstEntry === true && props.eventTitle !== undefined && props.eventCode !== undefined) {
-        props.handleEntry(false)
-        window.sessionStorage.setItem('eventTitle', props.eventTitle)
-        window.sessionStorage.setItem('eventCode', props.eventCode)
-    }
-    let eventTitle = window.sessionStorage.getItem('eventTitle')
-    let eventCode = window.sessionStorage.getItem('eventCode')
+    let eventCode = props.eventCode
+    let eventTitle = props.eventTitle
     
     const handleRefresh = () => {
         setMes("")
