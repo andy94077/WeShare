@@ -1,43 +1,50 @@
 import React	from 'react';
-const container = {
-    'width': '100vw',
-    'height': '100vh'
-}
-const abstractStyle = {
-    'width': '100vw',
-    'height': '5vh',
-    'margin': '3%',
+const institleStyle = { //instrouctor title
+    'marginTop': '5%',
+    'marginLeft': '2%',
 	'textAlign': 'left'
 };
 
-const memberStyle = {
-	'marginLeft': '10%',
+const audtitleStyle = { //audiance title
+    'marginTop': '20%',
+    'marginLeft': '2%',
+	'textAlign': 'left'
+};
+
+const insmemberStyle = {//instructor member
+	'marginLeft': '7%',
+    'marginTop': '-5%',
 	'textAlign': 'left',
-	'whiteSpace': 'pre'
+}
+
+const audmemberStyle = {//audiance member
+	'marginLeft': '7%',
+    'marginTop': '-5%',
+	'textAlign': 'left',
 }
 export default function Tutorial() {
 	return (
-		<div style={container}>
-			<div style={abstractStyle}>
+		<div>
+			<div style={institleStyle}>
                 <h4>Instructors<br/><br/></h4>
 			</div>
-            <div style={memberStyle}>
-                <h5>
+            <div style={insmemberStyle}>
+                <h6>
                     1. Sign up<br/><br/>
                     2. Pass the event code to listeners<br/><br/>
-                    3. Start uploading files!<br/><br/>
-                    4. Copy event token to sign in 
-                </h5>
+                    3. Copy the event token to sign in again at <br/>&ensp;&ensp;any time<br/><br/>
+                    4. Start uploading files!
+                </h6>
             </div>
-            <div style={abstractStyle}>
+            <div style={audtitleStyle}>
                 <h4>Audiences<br/><br/></h4>
             </div>
-            <div style={memberStyle}>
-                <h5>
-			        1. Fill in the event code and press "Join Now"<br/><br/>
+            <div style={audmemberStyle}>
+                <h6>
+			        1. Fill in the event code and click "Join Now"<br/><br/>
                     2. "Clik to Update"<br/><br/>
                     3. Start downloading files!
-                </h5>
+                </h6>
             </div>
 		</div>
 	)
