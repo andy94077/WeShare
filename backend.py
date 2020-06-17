@@ -1,4 +1,5 @@
 import os, json
+import html
 
 from hashlib import sha256
 from datetime import datetime
@@ -102,6 +103,7 @@ def insert():
     if postType in ['text', 'link', 'image', 'file']:
         if postType in ['text', 'link']:
             content = request.form['postContent']
+            content = html.escape(content)
         else:
             file = request.files['postFile']
             filename = file.filename.strip().split('/')[-1]
