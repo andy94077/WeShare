@@ -104,7 +104,6 @@ def insert():
         else:
             file = request.files['postFile']
             filename = file.filename.strip().split('/')[-1]
-            print(filename)
             hashValue = sha256(filename.encode()).hexdigest()
             filepath = os.path.join(app.config['UPLOAD_FOLDER'], code, postType, f'{hashValue}-{timestamp}-{filename}')
             content = json.dumps({
@@ -130,7 +129,7 @@ def show():
         t = p[1]
         if t in ['text', 'link']:
             return {
-                'timestamp': p[0],
+                'timestamp': str(p[0]),
                 'type': t,
                 'content': p[2]
             }
@@ -139,7 +138,7 @@ def show():
             filename = content['filename']
             filepath = content['filepath']
             return {
-                'timestamp': p[0],
+                'timestamp': str(p[0]),
                 'type': t,
                 'filename': filename,
                 'filepath': filepath
@@ -175,4 +174,4 @@ def download(filepath):
     filename = filepath.split('/')[-1][81:]
     return send_from_directory(directory = uploads, filename = filepath, as_attachment = True, attachment_filename = filename)
 
-app.run('140.112.30.32', port=48766, debug=True)
+app.run('140.112.30.32', port=48780, debug=False)
