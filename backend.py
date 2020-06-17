@@ -1,5 +1,6 @@
-import os, json
+import os, json, argparse
 import html
+import socket
 
 from hashlib import sha256
 from datetime import datetime
@@ -19,9 +20,9 @@ app.config['SECRET_KEY'] = 'a' * 24
 sqlhelper = SQLHelper()
 
 # Set permanent session
-@app.before_request
-def make_session_permanent():
-    print(session)
+#@app.before_request
+#def make_session_permanent():
+#    print(session)
 
 # Only for demo, probabily useless
 @app.route('/weshare/eventCode', methods=['POST'])
@@ -38,11 +39,11 @@ def create():
     os.mkdir(os.path.join(app.config['UPLOAD_FOLDER'], code, 'file'))
     os.mkdir(os.path.join(app.config['UPLOAD_FOLDER'], code, 'image'))
 
-    session.permanent = True
-    session['event_code'] = code
-    session['event_token'] = token
+    #session.permanent = True
+    #session['event_code'] = code
+    #session['event_token'] = token
 
-    print(session, code, token)
+    #print(session, code, token)
 
     return jsonify({
         'event_code' : code,
@@ -61,8 +62,8 @@ def admin():
         })
     else:
         code, title = result
-        session['event_code'] = code
-        session['event_token'] = token
+        #session['event_code'] = code
+        #session['event_token'] = token
         return jsonify({
             'valid' : 'True',
             'event_code' : code,
@@ -73,9 +74,8 @@ def admin():
 @app.route('/weshare/join', methods=['POST'])
 def join():
     code = request.form['eventCode']
-    print(code)
     if sqlhelper.CheckIfEventCodeExists(code):
-        session['event_code'] = code
+        #session['event_code'] = code
         title = sqlhelper.GetEventTitle(code)
         return jsonify({
             'valid': 'True',
@@ -115,7 +115,6 @@ def insert():
             }, ensure_ascii=False).replace('"', '\'')
             file.save(filepath)
 
-        print(code, postType, content)
         sqlhelper.InsertPost(code, postType, content)
         return jsonify({
             'valid' : 'True'
@@ -148,9 +147,7 @@ def show():
             }
 
     code = request.form['eventCode']
-    print(code)
     posts = list(map(parse, sqlhelper.GetPosts(code)))
-    print(posts)
 
     return jsonify({
         'posts' : posts
@@ -159,10 +156,8 @@ def show():
 @app.route('/weshare/destroy', methods=['POST'])
 def destroy():
     password = request.form['nuclearBombPassword']  # "cnlab2020"
-    print(password)
     if password == "cnlab2020":
         codes = sqlhelper.GetAllEventCodes()
-        print(codes)
         for code in codes:
             sqlhelper.RemoveEvent(code)
 
@@ -177,4 +172,11 @@ def download(filepath):
     filename = filepath.split('/')[-1][81:]
     return send_from_directory(directory = uploads, filename = filepath, as_attachment = True, attachment_filename = filename)
 
-app.run('140.112.30.32', port=48780, debug=False)
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-p', '--port', type=int, default=48780, help='Port number. Default: %(default)s.')
+    args = parser.parse_args()
+
+    hostname = socket.gethostname()
+    ip_addr = socket.gethostbyname(hostname)  
+    app.run(ip_addr, port=args.port, debug=False)
