@@ -17,46 +17,46 @@ const useStyles = makeStyles((theme) => ({
 		flexDirection: 'column',
 		alignItems: 'center'
 	},
-    button: {
-        display: 'none'
-    },
-    grid: {
-        marginTop: theme.spacing(4)
-    }
+	button: {
+		display: 'none'
+	},
+	grid: {
+		marginTop: theme.spacing(4)
+	}
 }))
 
 export default function SignIn(props) {
 	
-    const classes = useStyles()
-    
-    const handleClick = () => {
+	const classes = useStyles()
+	
+	const handleClick = () => {
 
-        var config = {
-            headers: {
-                'content-type': 'multipart/form-data',
-                'Access-Control-Allow-Origin': '*'
-            }
-        }
-        
-        const data = new FormData()
-        data.append('nuclearBombPassword', 'cnlab2020')
-        axios.post(setting['url'] + ':' + setting['port'] + '/weshare/destroy', data, config)
-            .then(function (response) { }).catch(function (error) { })
+		var config = {
+			headers: {
+				'content-type': 'multipart/form-data',
+				'Access-Control-Allow-Origin': '*'
+			}
+		}
+		
+		const data = new FormData()
+		data.append('nuclearBombPassword', 'cnlab2020')
+		axios.post(setting['url'] + ':' + setting['port'] + '/weshare/destroy', data, config)
+			.then(function (response) { }).catch(function (error) { })
 	}
 
 	return (
 		<Container component='main' maxWidth='xs'>
 			<CssBaseline />
 			<div className={classes.paper}>
-                <img src={logo} alt='logo' height='300px' />
-                <Button className={classes.button} variant='danger' size='sm' onClick={() => handleClick()}>Don't Push</Button>
-                <Grid className={classes.grid}>
-                    <Grid item>
-                        <a href='/#' onClick={() => props.parent.handleClick('Sign Up')}>
-                            Instructor? Click me!
-                        </a>
-                    </Grid>
-                </Grid>
+				<img src={logo} alt='logo' height='300px' />
+				<Button className={classes.button} variant='danger' size='sm' onClick={() => handleClick()}>Don't Push</Button>
+				<Grid className={classes.grid}>
+					<Grid item>
+						<a href='/#' onClick={() => props.parent.handleClick('Sign Up')}>
+							Instructor? Click me!
+						</a>
+					</Grid>
+				</Grid>
 			</div>
 		</Container>
 	)

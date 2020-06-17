@@ -38,125 +38,125 @@ const useStyles = makeStyles((theme) => ({
 
 export default function SignUp(props) {
 	
-    const classes = useStyles()
-    const input = useRef()
+	const classes = useStyles()
+	const input = useRef()
 
-    const [state, setState] = useState({
-        isCheck: false,
-        ifError: false,
-        isLoading: false,
-        errorMes: ''
-    })
+	const [state, setState] = useState({
+		isCheck: false,
+		ifError: false,
+		isLoading: false,
+		errorMes: ''
+	})
 
-    const handleSubmit = () => {
+	const handleSubmit = () => {
 
-        let title = input.current.value
+		let title = input.current.value
 
-        props.parent.handleEventTitle(undefined)
-        props.parent.handleEventCode(undefined)
-        props.parent.handleEventToken(undefined)
+		props.parent.handleEventTitle(undefined)
+		props.parent.handleEventCode(undefined)
+		props.parent.handleEventToken(undefined)
 
-        setState({ isLoading: true })
-        
-        if (title === '') {
-            setState({
-                ifError: true,
-                isLoading: false,
-                errorMes: setting['mes']['signUp'][0]
-            })
-            return false
-        } 
+		setState({ isLoading: true })
+		
+		if (title === '') {
+			setState({
+				ifError: true,
+				isLoading: false,
+				errorMes: setting['mes']['signUp'][0]
+			})
+			return false
+		} 
 
-        if (state.isCheck === false) {
-            setState({
-                ifError: true,
-                isLoading: false,
-                errorMes: setting['mes']['signUp'][1]
-            })
-            return false
-        }
+		if (state.isCheck === false) {
+			setState({
+				ifError: true,
+				isLoading: false,
+				errorMes: setting['mes']['signUp'][1]
+			})
+			return false
+		}
 
-        var config = {
-            headers: {
-                'content-type': 'multipart/form-data',
-                'Access-Control-Allow-Origin': '*'
-            }
-        }
-        
-        const data = new FormData();
-        data.append('eventTitle', title); 
-        axios.post(setting['url'] + ':' + setting['port'] + setting['flask']['signUp'], data, config, { timeout: 3 })
-            .then(function (response) {
-                props.parent.handleEventTitle(title)
-                props.parent.handleEventCode(response.data['event_code'])
-                props.parent.handleEventToken(response.data['event_token'])
-                props.parent.handleClick('Teacher')
-            })
-            .catch(function (error) {
-                setState({
-                    ifError: true,
-                    isLoading: false,
-                    errorMes: setting['mes']['signUp'][2]
-                })
-            })
-    }
+		var config = {
+			headers: {
+				'content-type': 'multipart/form-data',
+				'Access-Control-Allow-Origin': '*'
+			}
+		}
+		
+		const data = new FormData();
+		data.append('eventTitle', title); 
+		axios.post(setting['url'] + ':' + setting['port'] + setting['flask']['signUp'], data, config, { timeout: 3 })
+			.then(function (response) {
+				props.parent.handleEventTitle(title)
+				props.parent.handleEventCode(response.data['event_code'])
+				props.parent.handleEventToken(response.data['event_token'])
+				props.parent.handleClick('Teacher')
+			})
+			.catch(function (error) {
+				setState({
+					ifError: true,
+					isLoading: false,
+					errorMes: setting['mes']['signUp'][2]
+				})
+			})
+	}
 
-    const handleCheck = () => {
-        setState({ isCheck: !state.isCheck })
-    }
+	const handleCheck = () => {
+		setState({ isCheck: !state.isCheck })
+	}
 
-    return (
-        <Container component='main' maxWidth='xs'>
-            <CssBaseline />
-            <div className={classes.paper}>
-                <Avatar className={classes.avatar}>
-                    <LockOutlinedIcon />
-                </Avatar>
-                <Typography component='h1' variant='h5'>
-                    Sign up
-                </Typography>
-                <div className={classes.form} noValidate>
-                    <Grid container spacing={2}>
-                        <Grid item xs={12}>
-                            <TextField
-                                required
-                                fullWidth
-                                variant='outlined'
-                                label={setting['mes']['signUp'][3]}
-                                error={state.ifError}
-                                helperText={state.errorMes}
-                                inputRef={input}
-                            />
-                        </Grid>
-                        <Grid item xs={12}>
-                            <FormControlLabel
-                                control={<Checkbox color='primary' />}
-                                label={setting['mes']['signUp'][4]}
-                                onChange={() => handleCheck()}
-                            />
-                        </Grid>
-                    </Grid>
-                    { state.isLoading ?
-                    <Loading /> :  
-                    <Button
-                        fullWidth
-                        variant='contained'
-                        color='primary'
-                        className={classes.submit}
-                        onClick={() => handleSubmit()}
-                    >
-                        Sign Up
-                    </Button>
-                    }
-                    <Grid container justify='flex-end'>
-                        <Grid item>
-                            <a href='/#' onClick={() => props.parent.handleClick('Sign In')}>
-                                    {setting['mes']['signUp'][5]}
-                            </a>
-                        </Grid>
-                    </Grid>
-                </div>
-            </div>
-        </Container>
-    )
+	return (
+		<Container component='main' maxWidth='xs'>
+			<CssBaseline />
+			<div className={classes.paper}>
+				<Avatar className={classes.avatar}>
+					<LockOutlinedIcon />
+				</Avatar>
+				<Typography component='h1' variant='h5'>
+					Sign up
+				</Typography>
+				<div className={classes.form} noValidate>
+					<Grid container spacing={2}>
+						<Grid item xs={12}>
+							<TextField
+								required
+								fullWidth
+								variant='outlined'
+								label={setting['mes']['signUp'][3]}
+								error={state.ifError}
+								helperText={state.errorMes}
+								inputRef={input}
+							/>
+						</Grid>
+						<Grid item xs={12}>
+							<FormControlLabel
+								control={<Checkbox color='primary' />}
+								label={setting['mes']['signUp'][4]}
+								onChange={() => handleCheck()}
+							/>
+						</Grid>
+					</Grid>
+					{ state.isLoading ?
+					<Loading /> :  
+					<Button
+						fullWidth
+						variant='contained'
+						color='primary'
+						className={classes.submit}
+						onClick={() => handleSubmit()}
+					>
+						Sign Up
+					</Button>
+					}
+					<Grid container justify='flex-end'>
+						<Grid item>
+							<a href='/#' onClick={() => props.parent.handleClick('Sign In')}>
+									{setting['mes']['signUp'][5]}
+							</a>
+						</Grid>
+					</Grid>
+				</div>
+			</div>
+		</Container>
+	)
 }

@@ -36,71 +36,71 @@ const useStyles = makeStyles((theme) => ({
 
 export default function SignIn(props) {
 
-    const classes = useStyles()
-    const input = useRef() 
+	const classes = useStyles()
+	const input = useRef() 
 
-    const [state, setState] = useState({
-        ifError: false,
-        isLoading: false,
-        errorMes: ''
-    })
-       
-    const handleSubmit = () => {
+	const [state, setState] = useState({
+		ifError: false,
+		isLoading: false,
+		errorMes: ''
+	})
+	   
+	const handleSubmit = () => {
 
-        const token = input.current.value
+		const token = input.current.value
 
-        props.parent.handleEventTitle(undefined)
-        props.parent.handleEventCode(undefined)
-        props.parent.handleEventToken(undefined)
+		props.parent.handleEventTitle(undefined)
+		props.parent.handleEventCode(undefined)
+		props.parent.handleEventToken(undefined)
 
-        if (token === '' || token.length !== 8) {
-            setState({
-                ifError: true,
-                isLoading: false,
-                errorMes: setting['mes']['signIn'][4]
-            })
-            return false
-        }
-        
-        var config = {
-            headers: {
-                'content-type': 'multipart/form-data',
-                'Access-Control-Allow-Origin': '*'
-            }
-        }
+		if (token === '' || token.length !== 8) {
+			setState({
+				ifError: true,
+				isLoading: false,
+				errorMes: setting['mes']['signIn'][4]
+			})
+			return false
+		}
+		
+		var config = {
+			headers: {
+				'content-type': 'multipart/form-data',
+				'Access-Control-Allow-Origin': '*'
+			}
+		}
 
-        setState({
-            ifError: state.ifError,
-            isLoading: true,
-            errorMes: state.errorMes
-        })
+		setState({
+			ifError: state.ifError,
+			isLoading: true,
+			errorMes: state.errorMes
+		})
 
-        const data = new FormData();
-        data.append('eventToken', token); 
-        axios.post(setting['url'] + ':' + setting['port'] + setting['flask']['signIn'], data, config)
-            .then(function (response) {
-                if (response.data['valid'] === 'True') {
-                    props.parent.handleEventCode(response.data['event_code'])
-                    props.parent.handleEventTitle(response.data['event_title'])
-                    props.parent.handleEventToken(token)
-                    props.parent.handleClick('Teacher')
-                }
-                else {
-                    setState({
-                        ifError: true,
-                        isLoading: false,
-                        errorMes: setting['mes']['signIn'][0]
-                    })
-                }
-            })
-            .catch(function (error) {
-                setState({
-                    ifError: true,
-                    isLoading: false,
-                    errorMes: setting['mes']['signIn'][1]
-                })
-            })
-    }
+		const data = new FormData();
+		data.append('eventToken', token); 
+		axios.post(setting['url'] + ':' + setting['port'] + setting['flask']['signIn'], data, config)
+			.then(function (response) {
+				if (response.data['valid'] === 'True') {
+					props.parent.handleEventCode(response.data['event_code'])
+					props.parent.handleEventTitle(response.data['event_title'])
+					props.parent.handleEventToken(token)
+					props.parent.handleClick('Teacher')
+				}
+				else {
+					setState({
+						ifError: true,
+						isLoading: false,
+						errorMes: setting['mes']['signIn'][0]
+					})
+				}
+			})
+			.catch(function (error) {
+				setState({
+					ifError: true,
+					isLoading: false,
+					errorMes: setting['mes']['signIn'][1]
+				})
+			})
+	}
 
 	return (
 		<Container component='main' maxWidth='xs'>
@@ -117,15 +117,15 @@ export default function SignIn(props) {
 						variant='outlined'
 						required
 						fullWidth
-                        type='password'
+						type='password'
 						label={setting['mes']['signIn'][2]}
-                        error={state.ifError}
-                        helperText={state.errorMes}
-                        inputRef={input}
+						error={state.ifError}
+						helperText={state.errorMes}
+						inputRef={input}
 					/>
-                    {state.isLoading ?
-                    <Loading /> :
-                    <Button
+					{state.isLoading ?
+					<Loading /> :
+					<Button
 						fullWidth
 						variant='contained'
 						color='primary'
@@ -134,7 +134,7 @@ export default function SignIn(props) {
 					>
 						Sign In
 					</Button>
-                    }
+					}
 					<Grid container>
 						<Grid item>
 							<a href='/#' onClick={() => props.parent.handleClick('Sign Up')}>
