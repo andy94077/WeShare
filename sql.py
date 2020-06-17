@@ -1,5 +1,5 @@
 import re, random, string
-import MySQLdb
+import sqlite3
 import secret
 
 def generateRandomString(length = 4):
@@ -7,12 +7,7 @@ def generateRandomString(length = 4):
 
 class SQLHelper:
     def __init__(self):
-        self.db = MySQLdb.connect(
-            host = secret.SQL_IP,
-            user = secret.SQL_USERNAME,
-            passwd = secret.SQL_PASSWORD,
-            db = 'WeShare'
-        )
+        self.db = sqlite3.connect('WeShare.db')
 
     def GetAllEventCodes(self):
         cursor = self.db.cursor()
@@ -25,7 +20,7 @@ class SQLHelper:
         assert re.match('[0-9a-zA-Z]{4}', code)
 
         cursor = self.db.cursor()
-        cursor.execute(f'SELECT * FROM EventCodeMapping WHERE BINARY eventCode="{code}"')
+        cursor.execute(f'SELECT * FROM EventCodeMapping WHERE eventCode="{code}"')
         result = cursor.fetchall()
         return len(result) == 1
 
@@ -33,7 +28,7 @@ class SQLHelper:
         assert re.match('[0-9a-zA-Z]{4}', code)
 
         cursor = self.db.cursor()
-        cursor.execute(f'SELECT * FROM EventCodeMapping WHERE BINARY eventCode="{code}"')
+        cursor.execute(f'SELECT * FROM EventCodeMapping WHERE eventCode="{code}"')
         result = cursor.fetchall()
         if len(result) == 0:
             return None
@@ -45,7 +40,7 @@ class SQLHelper:
         assert re.match('[0-9a-zA-Z]{8}', token)
 
         cursor = self.db.cursor()
-        cursor.execute(f'SELECT * FROM EventCodeMapping WHERE BINARY eventToken="{token}"')
+        cursor.execute(f'SELECT * FROM EventCodeMapping WHERE eventToken="{token}"')
         result = cursor.fetchall()
         if len(result) == 0:
             return None
@@ -65,19 +60,17 @@ class SQLHelper:
 
         # Write to `EventCodeMapping`
         cursor = self.db.cursor()
-        query = 'INSERT INTO EventCodeMapping (`eventCode`, `eventToken`, `eventName`) VALUES (%(code)s, %(token)s, %(title)s)'
-        cursor.execute(query, dict(code=code, token=token, title=title))
+        query = 'INSERT INTO EventCodeMapping (`eventCode`, `eventToken`, `eventName`) VALUES (?, ?, ?)'
+        cursor.execute(query, (code, token, title))
         self.db.commit()
 
         # Create event table
         cursor = self.db.cursor()
-        cursor.execute(f'''
-            CREATE TABLE `Event_{code}` (
-                id INT(64) NOT NULL AUTO_INCREMENT,
-                time DATETIME NULL DEFAULT NOW(),
+        cursor.execute(f'''CREATE TABLE `Event_{code}` (
+                id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+                time DATETIME NULL DEFAULT CURRENT_TIMESTAMP,
                 type VARCHAR(15) NOT NULL,
-                content VARCHAR(4095) NOT NULL,
-                PRIMARY KEY (id));
+                content VARCHAR(4095) NOT NULL);
         ''')
         self.db.commit()
 
@@ -96,7 +89,7 @@ class SQLHelper:
 
         # Remove `EventCodeMapping` instance
         try:
-            cursor.execute(f'DELETE FROM EventCodeMapping WHERE BINARY eventCode = "{code}"')
+            cursor.execute(f'DELETE FROM EventCodeMapping WHERE eventCode = "{code}"')
         except:
             pass
 
@@ -118,8 +111,8 @@ class SQLHelper:
         assert type in ['text', 'link', 'image', 'file']
         
         cursor = self.db.cursor()
-        query = f'INSERT INTO Event_{code} (type, content) VALUES (%(type)s, %(content)s)'
-        cursor.execute(query, dict(type=type, content=content)
+        query = f'INSERT INTO Event_{code} (type, content) VALUES (?, ?)'
+        cursor.execute(query, (type, content))
         self.db.commit()
 
 #  inputToken = input().strip()
