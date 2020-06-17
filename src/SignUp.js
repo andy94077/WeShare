@@ -1,4 +1,6 @@
 import React, {useRef, useState} from 'react';
+
+import { makeStyles } from '@material-ui/core/styles';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -8,9 +10,9 @@ import Checkbox from '@material-ui/core/Checkbox';
 import Grid from '@material-ui/core/Grid';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
-import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import axios from 'axios';
+
 import Loading from './Loading';
 import setting from './Utils.json';
 
@@ -19,127 +21,137 @@ const useStyles = makeStyles((theme) => ({
 		marginTop: theme.spacing(8),
 		display: 'flex',
 		flexDirection: 'column',
-		alignItems: 'center',
+		alignItems: 'center'
 	},
 	avatar: {
 		margin: theme.spacing(1),
-		backgroundColor: theme.palette.primary.main,
+		backgroundColor: theme.palette.primary.main
 	},
 	form: {
-		width: '100%', // Fix IE 11 issue.
-		marginTop: theme.spacing(3),
+		width: '100%',
+		marginTop: theme.spacing(3)
 	},
 	submit: {
-		margin: theme.spacing(3, 0, 2),
-	},
-}));
+		margin: theme.spacing(3, 0, 2)
+	}
+}))
 
 export default function SignUp(props) {
 	
     const classes = useStyles()
     const input = useRef()
 
-    const [isCheck, setCheck] = useState(false)
-    const [ifError, setError] = useState(false)
-    const [errorMes, setErrorMes] = useState('')
-    const [isLoading, setLoading] = useState(false)
+    const [state, setState] = useState({
+        isCheck: false,
+        ifError: false,
+        isLoading: false,
+        errorMes: ''
+    })
 
     const handleSubmit = () => {
 
-        props.handleEventTitle(undefined)
-        props.handleEventCode(undefined)
-        props.handleEventToken(undefined)
+        let title = input.current.value
 
-        setLoading(true)
-        const title = input.current.value
-        if (title === "") {
-            setError(true)
-            setLoading(false)
-            setErrorMes("Must have an event title!")
+        props.parent.handleEventTitle(undefined)
+        props.parent.handleEventCode(undefined)
+        props.parent.handleEventToken(undefined)
+
+        setState({ isLoading: true })
+        
+        if (title === '') {
+            setState({
+                ifError: true,
+                isLoading: false,
+                errorMes: setting['mes']['signUp'][0]
+            })
             return false
         } 
 
-        if (isCheck === false) {
-            setError(true)
-            setLoading(false)
-            setErrorMes("Please check the policy!")
+        if (state.isCheck === false) {
+            setState({
+                ifError: true,
+                isLoading: false,
+                errorMes: setting['mes']['signUp'][1]
+            })
             return false
         }
 
-        var config = { headers: {
-        'content-type': 'multipart/form-data',
-        'Access-Control-Allow-Origin': '*'}
+        var config = {
+            headers: {
+                'content-type': 'multipart/form-data',
+                'Access-Control-Allow-Origin': '*'
+            }
         }
         
         const data = new FormData();
         data.append('eventTitle', title); 
-        axios.post(setting["url"] + ":" + setting["port"] + "/weshare/create", data, config, { timeout: 3 })
-        .then(function (response) {
-            props.handleClick("Teacher")
-            props.handleEventTitle(title)
-            props.handleEventCode(response.data['event_code'])
-            props.handleEventToken(response.data['event_token'])
-        })
-        .catch(function (error) {
-            setError(true)
-            setLoading(false)
-            setErrorMes("Connection Failed!")
-        })
+        axios.post(setting['url'] + ':' + setting['port'] + setting['flask']['signUp'], data, config, { timeout: 3 })
+            .then(function (response) {
+                props.parent.handleEventTitle(title)
+                props.parent.handleEventCode(response.data['event_code'])
+                props.parent.handleEventToken(response.data['event_token'])
+                props.parent.handleClick('Teacher')
+            })
+            .catch(function (error) {
+                setState({
+                    ifError: true,
+                    isLoading: false,
+                    errorMes: setting['mes']['signUp'][2]
+                })
+            })
     }
 
     const handleCheck = () => {
-        setCheck(!isCheck)
+        setState({ isCheck: !state.isCheck })
     }
 
     return (
-        <Container component="main" maxWidth="xs">
+        <Container component='main' maxWidth='xs'>
             <CssBaseline />
             <div className={classes.paper}>
                 <Avatar className={classes.avatar}>
                     <LockOutlinedIcon />
                 </Avatar>
-                <Typography component="h1" variant="h5">
+                <Typography component='h1' variant='h5'>
                     Sign up
                 </Typography>
                 <div className={classes.form} noValidate>
                     <Grid container spacing={2}>
                         <Grid item xs={12}>
                             <TextField
-                                error={ifError}
-                                variant="outlined"
                                 required
                                 fullWidth
-                                name="eventtitle"
-                                label="Event Title"
-                                id="eventtitle"
-                                autoComplete="eventtitle"
-                                autoFocus
-                                helperText={errorMes}
+                                variant='outlined'
+                                label={setting['mes']['signUp'][3]}
+                                error={state.ifError}
+                                helperText={state.errorMes}
                                 inputRef={input}
                             />
                         </Grid>
                         <Grid item xs={12}>
                             <FormControlLabel
-                                control={<Checkbox value="allowExtraEmails" color="primary" />}
-                                label="I have read and accept the terms and privacy policy."
+                                control={<Checkbox color='primary' />}
+                                label={setting['mes']['signUp'][4]}
                                 onChange={() => handleCheck()}
                             />
                         </Grid>
                     </Grid>
-                    {isLoading ? <Loading /> :  <Button
-                        type="submit"
+                    { state.isLoading ?
+                    <Loading /> :  
+                    <Button
                         fullWidth
-                        variant="contained"
-                        color="primary"
+                        variant='contained'
+                        color='primary'
                         className={classes.submit}
                         onClick={() => handleSubmit()}
                     >
                         Sign Up
-                    </Button>}
-                    <Grid container justify="flex-end">
+                    </Button>
+                    }
+                    <Grid container justify='flex-end'>
                         <Grid item>
-                            <a href="/#" onClick={() => props.handleClick("Sign In")}>
-                                    {"Already have a token? Click to Sign in"}
+                            <a href='/#' onClick={() => props.parent.handleClick('Sign In')}>
+                                    {setting['mes']['signUp'][5]}
                             </a>
                         </Grid>
                     </Grid>

@@ -1,16 +1,30 @@
 import React from 'react';
+
+import { makeStyles } from '@material-ui/core/styles';
 import { Row, Col } from 'reactstrap';
 
+const useStyles = makeStyles((theme) => ({
+    container: {
+        width: "90%",
+        float: "none",
+        margin: "0 auto"
+    },
+    col: {
+        marginTop: "30px",
+    }
+}))
+
 export default function Tutorial() {
+
+    const classes = useStyles()
+
 	return (
-        <div style={{ width: "90%", float: "none", margin: "0 auto" }} >
+        <div className={classes.container} >
             <Col>
-                <div style={{height: "5vh"}}></div>
-                <Row>
+                <Row className={classes.col} >
                     <h4>Instructors</h4>
                 </Row>
-                <div style={{height: "5vh"}}></div>
-                <Row>
+                <Row className={classes.col} >
                     <h6>1. Sign up</h6>
                 </Row>
                 <Row>
@@ -22,12 +36,10 @@ export default function Tutorial() {
                 <Row>
                     <h6>4. Start uploading files!</h6>
                 </Row>
-                <div style={{height: "5vh"}}></div>
-                <Row>
+                <Row className={classes.col} >
                     <h4>Audiences</h4>
                 </Row>
-                <div style={{height: "5vh"}}></div>
-                <Row>
+                <Row className={classes.col} >
                     <h6>1. Fill in the event code, click "Join Now"</h6>
                 </Row>
                 <Row>

@@ -1,7 +1,10 @@
 import React from 'react';
 import './App.css';
 
-import logo from './logo.png';
+import {Navbar, Nav, NavDropdown} from 'react-bootstrap';
+import Box from '@material-ui/core/Box';
+import Typography from '@material-ui/core/Typography';
+
 import Welcome from './Welcome';
 import Loading from './Loading';
 import EventCode from './EventCode';
@@ -11,14 +14,11 @@ import Tutorial from './Tutorial';
 import Contribution from './Contribution';
 import Upload from './Upload';
 import Download from './Download';
-
-import {Navbar, Nav, NavDropdown} from 'react-bootstrap';
-import Box from '@material-ui/core/Box';
-import Typography from '@material-ui/core/Typography';
+import logo from './logo.png';
 
 function Copyright() {
 	return (
-		<Typography variant="body2" color="textSecondary" align="center">
+		<Typography variant='body2' color='textSecondary' align='center'>
 			{'Copyright © '}
 				2020 WeShare. All rights reserved.
 		</Typography>
@@ -28,8 +28,8 @@ function Copyright() {
 class App extends React.Component {
 	constructor() {
 		super()
-        const storage = localStorage.getItem('localState')
-        this.state = (storage === null ? ({ tabIndex: "Welcome", codeErrorMes: "", navExpanded: false }) : JSON.parse(storage))
+        try { this.state = JSON.parse(localStorage.getItem('localState')) }
+        catch { this.state = ({ tabIndex: 'Welcome', codeErrorMes: '', navExpanded: false }) } 
 	}
     componentDidUpdate = (_, __) => {
         localStorage.setItem('localState', JSON.stringify(this.state)) 
@@ -40,7 +40,7 @@ class App extends React.Component {
     }
 	handleClick = (key) => {
         this.setState({ tabIndex: key })
-        if (key !== "Welcome" || this.state.navExpanded)
+        if (key !== 'Welcome' || this.state.navExpanded)
             this.setNavExpanded(false)
     }
     handleEventCode = (code) => {
@@ -53,79 +53,56 @@ class App extends React.Component {
         this.setState({ activateEventToken: token })
     }
 	render() {
-		const tabIndex = this.state.tabIndex;
-		let currentPage;
-		if (tabIndex === "Welcome")
-			currentPage =
-                <Welcome 
-                    handleClick={this.handleClick}
-                />
-        else if (tabIndex === "Loading")
-            currentPage = 
-                <Loading />
-		else if (tabIndex === "Sign Up")
-			currentPage = 
-                <SignUp
-                    handleClick={this.handleClick}
-                    handleEventTitle={this.handleEventTitle}
-                    handleEventCode={this.handleEventCode}
-                    handleEventToken={this.handleEventToken}
-                />
-		else if (tabIndex === "Sign In")
-			currentPage =
-                <SignIn handleClick={this.handleClick}
-                    handleEventTitle={this.handleEventTitle}
-                    handleEventCode={this.handleEventCode}
-                    handleEventToken={this.handleEventToken}
-                />
-		else if (tabIndex === "Tutorial")
-            currentPage =
-                <Tutorial />
-		else if (tabIndex === "About Us")
-			currentPage = 
-                <Contribution />
-		else if (tabIndex === "Teacher")
-			currentPage = 
-                <Upload
-                    handleEntry={this.handleEntry}
-                    eventTitle={this.state.activateEventTitle} 
-                    eventCode={this.state.activateEventCode} 
-                    eventToken={this.state.activateEventToken}
-                />
-		else if (tabIndex === "Student")
-			currentPage =
-                <Download
-                    handleEntry={this.handleEntry}
-                    eventTitle={this.state.activateEventTitle}
-                    eventCode={this.state.activateEventCode}
-                />
+        
+        let currentPage
+
+        switch (this.state.tabIndex) {
+            case 'Welcome':
+                currentPage = <Welcome parent={this} />
+                break
+            case 'Sign Up':
+                currentPage = <SignUp parent={this} />
+                break
+            case 'Sign In':
+                currentPage = <SignIn parent={this} />
+                break
+            case 'Tutorial':
+                currentPage = <Tutorial parent={this} />
+                break
+            case 'About Us':
+                currentPage = <Contribution parent={this} />
+                break
+            case 'Teacher':
+                currentPage = <Upload parent={this} />
+                break
+            case 'Student':
+                currentPage = <Download parent={this} />
+                break
+            default:
+                currentPage = <Loading />
+        }
+
 		return (
 		<div>
-            <Navbar bg="light" expand="lg" onToggle={() => this.setNavExpanded(true)} expanded={this.state.navExpanded} >
-				<Navbar.Brand onClick={() => this.handleClick('Welcome')}><img src={logo} alt="logo" height="50px"></img>WeShare β</Navbar.Brand>
-				<Navbar.Toggle aria-controls="basic-navbar-nav" />
-				<Navbar.Collapse id="basic-navbar-nav" >
-					<Nav className="mr-auto">
-						<NavDropdown title="Instructor" id="basic-nav-dropdown">
-							<NavDropdown.Item onClick={() => this.handleClick("Sign Up")}>Sign Up</NavDropdown.Item>
-							<NavDropdown.Item onClick={() => this.handleClick("Sign In")}>Sign In</NavDropdown.Item>
+            <Navbar bg='light' expand='lg' onToggle={() => this.setNavExpanded(true)} expanded={this.state.navExpanded} >
+				<Navbar.Brand style={{ cursor: 'pointer' }} onClick={() => this.handleClick('Welcome')}>
+                    <img src={logo} alt='logo' height='50px'></img>WeShare β
+                </Navbar.Brand>
+				<Navbar.Toggle aria-controls='basic-navbar-nav' />
+				<Navbar.Collapse id='basic-navbar-nav' >
+					<Nav className='mr-auto'>
+						<NavDropdown title='Instructor' id='basic-nav-dropdown'>
+							<NavDropdown.Item onClick={() => this.handleClick('Sign Up')}>Sign Up</NavDropdown.Item>
+							<NavDropdown.Item onClick={() => this.handleClick('Sign In')}>Sign In</NavDropdown.Item>
 						</NavDropdown>
-						<Nav.Link onClick={() => this.handleClick("Tutorial")}>Tutorial</Nav.Link>
-						<Nav.Link onClick={() => this.handleClick("About Us")}>About Us</Nav.Link>
+						<Nav.Link onClick={() => this.handleClick('Tutorial')}>Tutorial</Nav.Link>
+						<Nav.Link onClick={() => this.handleClick('About Us')}>About Us</Nav.Link>
 					</Nav>
-                    <EventCode
-                        handleClick={this.handleClick}
-                        handleEventTitle={this.handleEventTitle}
-                        handleEventCode={this.handleEventCode}
-                    />
+                    <EventCode parent={this} />
 				</Navbar.Collapse>
 			</Navbar>
-			<div className="basket">
-				{currentPage}
-			</div>
-			<Box mt={5}>
-				<Copyright />
-			</Box>
+			{currentPage}
+			<Box mt={5}><Copyright /></Box>
 		</div>
 		)
 	}

@@ -1,21 +1,37 @@
 import React from 'react';
+
+import { makeStyles } from '@material-ui/core/styles';
 import { Row, Col } from 'reactstrap';
 
+const useStyles = makeStyles((theme) => ({
+    container: {
+        width: "90%",
+        float: "none",
+        margin: "0 auto"
+    },
+    col: {
+        marginTop: "30px",
+        textAlign: "center"
+    }
+}))
+
 export default function Contribution() {
+
+    const classes = useStyles()
+
 	return (
-        <div style={{ width: "90%", float: "none", margin: "0 auto" }} >
-            <div style={{height: "5vh"}}></div>
-            <Row>
-                <Col><h3 style={{ textAlign: "center" }}>A chrome extension<br/>that makes sharing easier.</h3></Col>
-            </Row>
-            <div style={{height: "10vh"}}></div>
-            <Row>
-                <Col><h4 style={{ textAlign: "center" }}>Developers</h4></Col>
-            </Row>
-            <div style={{height: "5vh"}}></div>
-            <Row>
+        <div className={classes.container} >
+            <Row className={classes.col} >
                 <Col>
-                    <p style={{ textAlign: "center" }}>
+                    <h3>A chrome extension<br/>that makes sharing easier.</h3>
+                </Col>
+            </Row>
+            <Row className={classes.col} >
+                <Col><h4>Developers</h4></Col>
+            </Row>
+            <Row className={classes.col} >
+                <Col>
+                    <p>
                         b06902001 陳義榮<br/>
                         b06902017 趙允祥<br/>
                         b06902024 黃秉迦<br/>
