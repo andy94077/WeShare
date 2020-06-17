@@ -28,8 +28,8 @@ function Copyright() {
 class App extends React.Component {
 	constructor() {
 		super()
-        try { this.state = JSON.parse(localStorage.getItem('localState')) }
-        catch { this.state = ({ tabIndex: 'Welcome', codeErrorMes: '', navExpanded: false }) } 
+        try { this.state = JSON.parse(localStorage.getItem('localState')) } catch {}
+        if (this.state === null) { this.state = ({ tabIndex: 'Welcome', codeErrorMes: '', navExpanded: false }) } 
 	}
     componentDidUpdate = (_, __) => {
         localStorage.setItem('localState', JSON.stringify(this.state)) 
