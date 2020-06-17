@@ -1,6 +1,5 @@
 import re, random, string
 import sqlite3
-import secret
 
 def generateRandomString(length = 4):
     return ''.join(random.choices(string.ascii_letters + string.digits, k = length))
