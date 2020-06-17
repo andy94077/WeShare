@@ -1,6 +1,8 @@
 # WeShare Beta
 
-A chrome extension that makes sharing easier.
+#### A chrome extension that makes sharing easier.
+
+<img src="./src/logo.png" height="100px" />
 
 ## Usage
 
