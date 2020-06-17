@@ -65,11 +65,8 @@ class SQLHelper:
 
         # Write to `EventCodeMapping`
         cursor = self.db.cursor()
-        cursor.execute(f'''
-            INSERT INTO EventCodeMapping
-                (`eventCode`, `eventToken`, `eventName`)
-                VALUES ("{code}", "{token}", "{title}")
-        ''')
+        query = 'INSERT INTO EventCodeMapping (`eventCode`, `eventToken`, `eventName`) VALUES (%(code)s, %(token)s, %(title)s)'
+        cursor.execute(query, dict(code=code, token=token, title=title))
         self.db.commit()
 
         # Create event table
@@ -121,11 +118,8 @@ class SQLHelper:
         assert type in ['text', 'link', 'image', 'file']
         
         cursor = self.db.cursor()
-        cursor.execute(f'''
-            INSERT INTO Event_{code}
-                (type, content)
-                VALUES ("{type}", "{content}")
-        ''');
+        query = f'INSERT INTO Event_{code} (type, content) VALUES (%(type)s, %(content)s)'
+        cursor.execute(query, dict(type=type, content=content)
         self.db.commit()
 
 #  inputToken = input().strip()
