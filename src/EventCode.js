@@ -25,7 +25,6 @@ class EventCode extends React.Component {
         data.append('eventCode', this.state.eventCode); 
         axios.post(setting["url"] + ":" + setting["port"] + "/weshare/join", data, config)
         .then(function (response) {
-            console.log('Code exists: ' + response.data['valid'])
             if (response.data['valid'] === 'True') {
                 self.props.handleClick("Student")
                 self.props.handleEventTitle(response.data['event_title'])
@@ -56,7 +55,7 @@ class EventCode extends React.Component {
                 <Form inline>
                     <Row>
                         <p style={{ color: "red" }}><br/>{this.state.codeErrorMes}</p>
-                        <Col>
+                        <Col style={{ textAlign: "right" }}>
                             <TextField
                                 fullWidth
                                 margin="dense"
@@ -67,11 +66,14 @@ class EventCode extends React.Component {
                                 id="eventCode"
                                 inputRef={this.eventCode}
                                 onChange={() => this.handleChange()}
+                                onKeyDown={e => { if (e.keyCode === 13)  e.preventDefault() }}
                             />
                         </Col>
-                        <Col>
+                        <Col xs={5} style={{textAlign: "right"}}>
                             <div style={{ height: "10px" }}></div>
-                        <Button variant="outline-primary" onClick={() => this.handleClick()}>Join Now</Button>
+                            <Button variant="outline-primary" onClick={() => this.handleClick()}>Join Now</Button>
+                        </Col>
+                        <Col xs={1}>
                         </Col>
                     </Row>
                 </Form>

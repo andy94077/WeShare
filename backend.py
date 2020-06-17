@@ -72,6 +72,7 @@ def admin():
 @app.route('/weshare/join', methods=['POST'])
 def join():
     code = request.form['eventCode']
+    print(code)
     if sqlhelper.CheckIfEventCodeExists(code):
         session['event_code'] = code
         title = sqlhelper.GetEventTitle(code)

@@ -28,26 +28,21 @@ function Copyright() {
 class App extends React.Component {
 	constructor() {
 		super()
-		this.state = ({ tabIndex: 'Welcome', codeErrorMes: '' })
-		if (window.sessionStorage.getItem('tabIndex') !== null) {
-            this.state = ({ tabIndex: window.sessionStorage.getItem('tabIndex'), navExpanded: false, firstEntry: true })
-		}
-        this.handleClick = this.handleClick.bind(this)
-        this.handleEventCode = this.handleEventCode.bind(this)
-        this.handleEventTitle = this.handleEventTitle.bind(this)
-        this.handleEventToken = this.handleEventToken.bind(this)
+        const storage = localStorage.getItem('localState')
+        this.state = (storage === null ? ({ tabIndex: "Welcome", codeErrorMes: "", navExpanded: false }) : JSON.parse(storage))
 	}
+    componentDidUpdate = (_, __) => {
+        localStorage.setItem('localState', JSON.stringify(this.state)) 
+    }
     setNavExpanded = (status) => {
         if (status === false) this.setState({ navExpanded: false})
         else this.setState({ navExpanded: this.state.navExpanded ? false : true })
     }
 	handleClick = (key) => {
-        this.handleEntry(true)
-        window.sessionStorage.setItem('tabIndex', key)
         this.setState({ tabIndex: key })
         if (key !== "Welcome" || this.state.navExpanded)
             this.setNavExpanded(false)
-	}
+    }
     handleEventCode = (code) => {
         this.setState({ activateEventCode: code })
     }
@@ -57,41 +52,53 @@ class App extends React.Component {
     handleEventToken = (token) => {
         this.setState({ activateEventToken: token })
     }
-    handleEntry = (entry) => {
-        this.setState({ firstEntry: entry })
-    }
 	render() {
 		const tabIndex = this.state.tabIndex;
 		let currentPage;
 		if (tabIndex === "Welcome")
-			currentPage = <Welcome handleClick={this.handleClick} />
+			currentPage =
+                <Welcome 
+                    handleClick={this.handleClick}
+                />
         else if (tabIndex === "Loading")
-            currentPage = <Loading />
+            currentPage = 
+                <Loading />
 		else if (tabIndex === "Sign Up")
-			currentPage = <SignUp handleClick={this.handleClick}
-                            handleEventTitle={this.handleEventTitle}
-                            handleEventCode={this.handleEventCode}
-                            handleEventToken={this.handleEventToken} />
+			currentPage = 
+                <SignUp
+                    handleClick={this.handleClick}
+                    handleEventTitle={this.handleEventTitle}
+                    handleEventCode={this.handleEventCode}
+                    handleEventToken={this.handleEventToken}
+                />
 		else if (tabIndex === "Sign In")
-			currentPage = <SignIn handleClick={this.handleClick}
-                            handleEventTitle={this.handleEventTitle}
-                            handleEventCode={this.handleEventCode}
-                            handleEventToken={this.handleEventToken} />
+			currentPage =
+                <SignIn handleClick={this.handleClick}
+                    handleEventTitle={this.handleEventTitle}
+                    handleEventCode={this.handleEventCode}
+                    handleEventToken={this.handleEventToken}
+                />
 		else if (tabIndex === "Tutorial")
-            currentPage = <Tutorial />
+            currentPage =
+                <Tutorial />
 		else if (tabIndex === "About Us")
-			currentPage = <Contribution />
+			currentPage = 
+                <Contribution />
 		else if (tabIndex === "Teacher")
-			currentPage = <Upload firstEntry={this.state.firstEntry}
-                            handleEntry={this.handleEntry}
-                            eventTitle={this.state.activateEventTitle} 
-                            eventCode={this.state.activateEventCode} 
-                            eventToken={this.state.activateEventToken} />
+			currentPage = 
+                <Upload
+                    handleEntry={this.handleEntry}
+                    eventTitle={this.state.activateEventTitle} 
+                    eventCode={this.state.activateEventCode} 
+                    eventToken={this.state.activateEventToken}
+                />
 		else if (tabIndex === "Student")
-			currentPage = <Download firstEntry={this.state.firstEntry}
-                            handleEntry={this.handleEntry}
-                            eventTitle={this.state.activateEventTitle}
-                            eventCode={this.state.activateEventCode} />
+			currentPage =
+                <Download
+                    handleEntry={this.handleEntry}
+                    eventTitle={this.state.activateEventTitle}
+                    eventCode={this.state.activateEventCode}
+                />
 		return (
 		<div>
             <Navbar bg="light" expand="lg" onToggle={() => this.setNavExpanded(true)} expanded={this.state.navExpanded} >
@@ -106,10 +113,14 @@ class App extends React.Component {
 						<Nav.Link onClick={() => this.handleClick("Tutorial")}>Tutorial</Nav.Link>
 						<Nav.Link onClick={() => this.handleClick("About Us")}>About Us</Nav.Link>
 					</Nav>
-                    <EventCode handleClick={this.handleClick} handleEventTitle={this.handleEventTitle} handleEventCode={this.handleEventCode} />
+                    <EventCode
+                        handleClick={this.handleClick}
+                        handleEventTitle={this.handleEventTitle}
+                        handleEventCode={this.handleEventCode}
+                    />
 				</Navbar.Collapse>
 			</Navbar>
-			<div>
+			<div className="basket">
 				{currentPage}
 			</div>
 			<Box mt={5}>

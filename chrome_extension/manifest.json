@@ -8,10 +8,6 @@
 		"128": "icon/icon128.png"
 	},
 	"manifest_version": 2,
-	"permissions": [
-		"webRequest",
-		"*://140.112.29.204/*"
-	],
 	"browser_action": {
 		"default_popup": "popup.html",
 		"default_title": "WeShare",
