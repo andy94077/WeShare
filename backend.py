@@ -1,4 +1,4 @@
-import os, json
+import os, json, argparse
 
 from hashlib import sha256
 from datetime import datetime
@@ -175,4 +175,9 @@ def download(filepath):
     filename = filepath.split('/')[-1][81:]
     return send_from_directory(directory = uploads, filename = filepath, as_attachment = True, attachment_filename = filename)
 
-app.run('140.112.30.32', port=48780, debug=False)
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-p', '--port', type=int, default=48780, help='Port number. Default: %(default)s.')
+    args = parser.parse_args()
+
+    app.run('140.112.30.32', port=args.port, debug=False)
