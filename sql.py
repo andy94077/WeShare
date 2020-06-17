@@ -6,7 +6,7 @@ def generateRandomString(length = 4):
 
 class SQLHelper:
     def __init__(self):
-        self.db = sqlite3.connect('WeShare.db')
+        self.db = sqlite3.connect('WeShare.db', check_same_thread=False)
 
     def GetAllEventCodes(self):
         cursor = self.db.cursor()
