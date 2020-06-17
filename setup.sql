@@ -1,0 +1,14 @@
+CREATE SCHEMA `WeShare` DEFAULT CHARACTER SET utf8 COLLATE utf8_bin;
+
+CREATE TABLE `WeShare`.`EventCodeMapping` (
+  `id` INT(64) NOT NULL,
+  `eventCode` VARCHAR(8) NOT NULL,
+  `eventToken` VARCHAR(12) NOT NULL,
+  `eventName` VARCHAR(255) NULL DEFAULT NULL,
+  `createTime` DATETIME NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE INDEX `eventCode_UNIQUE` (`eventCode` ASC),
+  UNIQUE INDEX `eventToken_UNIQUE` (`eventToken` ASC))
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8
+COLLATE = utf8_bin;
