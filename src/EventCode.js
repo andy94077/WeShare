@@ -32,13 +32,13 @@ class EventCode extends React.Component {
             }
             else {
                 self.props.handleClick("Welcome")
-                self.setState({ codeErrorMes: "code not exists!" })
+                self.setState({ codeErrorMes: "not exists!" })
                 self.setState({ ifError: true })
             }
         })
         .catch(function (error) {
             self.props.handleClick("Welcome")
-            self.setState({ codeErrorMes: "Format error!" })
+            self.setState({ codeErrorMes: "format error!" })
             self.setState({ ifError: true })
         })
     }
@@ -54,7 +54,6 @@ class EventCode extends React.Component {
             <div>
                 <Form inline>
                     <Row>
-                        <p style={{ color: "red" }}><br/>{this.state.codeErrorMes}</p>
                         <Col style={{ textAlign: "right" }}>
                             <TextField
                                 fullWidth
@@ -65,6 +64,7 @@ class EventCode extends React.Component {
                                 label="event code"
                                 id="eventCode"
                                 inputRef={this.eventCode}
+                                helperText={this.state.codeErrorMes}
                                 onChange={() => this.handleChange()}
                                 onKeyDown={e => { if (e.keyCode === 13)  e.preventDefault() }}
                             />
